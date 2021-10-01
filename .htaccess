@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+  RewriteRule "(^|/).git" - [F]
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+  # RewriteCond %{HTTP_REFERER} !^http(s)://(www\.)?localhost [NC] 
+  # RewriteCond %{HTTP_REFERER} !^http(s)://(www\.)?localhost.*$ [NC] 
+  RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?smartchapa.com [NC]
+  RewriteRule \.(gif|jpg|js|txt|png|dat|pdf|xls|xlsx|jpeg)$ - [F]
+  # RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+
+  ErrorDocument 404 /error_404.php 
+</IfModule>

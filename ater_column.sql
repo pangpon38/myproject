@@ -1,0 +1,34 @@
+DECLARE @SQLString NVARCHAR(MAX)
+DECLARE @BASIC_ID INT
+DECLARE @CHAPA_CLOUD_ID VARCHAR(3)
+DECLARE @DBNAME VARCHAR(100)
+DECLARE @maxid VARCHAR(50)
+DECLARE @date_run VARCHAR(10)
+DECLARE @date_data VARCHAR(10)
+
+SET @SQLString=N''
+
+DECLARE cursor_name CURSOR FOR 
+	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM baac_cloud_63.dbo.M_BASIC WHERE CHAPA_CLOUD_ID NOT IN ('000','001') ORDER BY CHAPA_CLOUD_ID
+
+	OPEN cursor_name
+	FETCH NEXT FROM cursor_name
+	INTO @BASIC_ID,@CHAPA_CLOUD_ID
+
+	-- Loop From Cursor
+	WHILE (@@FETCH_STATUS = 0) 
+	BEGIN 
+
+SET @DBNAME='baac_chapa_'+@CHAPA_CLOUD_ID
+
+SET @SQLString = 'ALTER TABLE '+@DBNAME+'.dbo.M_ALERT_DEAD ADD create_datetime datetime'
+
+EXEC sp_Executesql @SQLString 
+
+		FETCH NEXT FROM cursor_name
+		INTO @BASIC_ID,@CHAPA_CLOUD_ID
+	END
+
+	-- Close cursor
+	CLOSE cursor_name
+	DEALLOCATE cursor_name
