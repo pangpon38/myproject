@@ -35,58 +35,103 @@ function number_format_chk($number = '', $digit = 0)
     }
 }
 
-$header_br = array(
-    "สาขายานยนต์และชิ้นส่วน",
-    "สาขาเครื่องใช้ไฟฟ้าและอิเล็กทรอนิกส์",
-    "สาขาผลิตภัณฑ์พลาสติกและบรรจุภัณฑ์",
-    "สาขาพลังงานและพลังงานทดแทน",
-    "สาขากลุ่มธุรกิจที่เป็นมิตรกับสิ่งแวดล้อม",
-    "สาขาเทคโนโลยีชีวภาพ",
-    "สาขาเหล็กและโลหะการ",
-    "สาขาเครื่องจักรกล",
-    "สาขาแม่พิมพ์",
-    "สาขาแก้วและเซรามิกส์",
-    "สาขาอาหาร",
-    "สาขาผลิตภัณฑ์ยาง",
-    "สาขาผลิตภัณฑ์ฮาลาล",
-    "สาขาเฟอร์นิเจอร์ไม้และเครื่องเรือน",
-    "สาขาผลิตภัณฑ์กระดาษ",
-    "สาขาเกษตรอินทรีย์",
-    "สาขาสิ่งทอและเครื่องนุ่งห่ม",
-    "สาขาอัญมณีและเครื่องประดับ",
-    "สาขายาและสมุนไพร",
-    "สาขาสิ่งพิมพ์",
-    "สาขาเครื่องหนังและรองเท้า",
-    "สาขาหัตถอุตสาหกรรม"
+$header_n = array(
+    "เชียงใหม่",
+    "ลำพูน",
+    "ลำปาง",
+    "อุตรดิตถ์",
+    "แพร่",
+    "น่าน",
+    "พะเยา",
+    "เชียงราย",
+    "แม่ฮ่องสอน",
+    "นครสวรรค์",
+    "กำแพงเพชร",
+    "ตาก",
+    "สุโขทัย",
+    "พิษณุโลก",
+    "พิจิตร",
+    "เพชรบูรณ์"
+);
+
+$header_c = array(
+    "กรุงเทพมหานคร",
+    "สมุทรปราการ",
+    "นนทบุรี",
+    "ปทุมธานี",
+    "พระนครศรีอยุธยา",
+    "อ่างทอง",
+    "ลพบุรี",
+    "สิงห์บุรี",
+    "ชัยนาท",
+    "สระบุรี",
+    "ฉะเชิงเทรา",
+    "นครนายก",
+    "อุทัยธานี",
+    "สุพรรณบุรี",
+    "นครปฐม",
+    "สมุทรสาคร",
+    "สมุทรสงคราม"
+);
+
+$header_n_east = array(
+    "นครราชสีมา",
+    "บุรีรัมย์",
+    "สุรินทร์",
+    "ศรีสะเกษ",
+    "อุบลราชธานี",
+    "ยโสธร",
+    "ชัยภูมิ",
+    "อำนาจเจริญ",
+    "หนองบัวลำภู",
+    "ขอนแก่น",
+    "อุดรธานี",
+    "เลย",
+    "หนองคาย",
+    "มหาสารคาม",
+    "ร้อยเอ็ด",
+    "กาฬสินธุ์",
+    "สกลนคร",
+    "นครพนม",
+    "มุกดาหาร",
+    "บึงกาฬ"
+);
+
+$header_w = array(
+    "ราชบุรี",
+    "กาญจนบุรี",
+    "เพชรบุรี",
+    "ประจวบคีรีขันธ์"
+);
+
+$header_e = array(
+    "ชลบุรี",
+    "ระยอง",
+    "จันทบุรี",
+    "ตราด",
+    "ปราจีนบุรี",
+    "สระแก้ว"
+);
+
+$header_s = array(
+    "นครศรีธรรมราช",
+    "กระบี่",
+    "พังงา",
+    "ภูเก็ต",
+    "สุราษฎร์ธานี",
+    "ระนอง",
+    "ชุมพร",
+    "สงขลา",
+    "สตูล",
+    "ตรัง",
+    "พัทลุง",
+    "ปัตตานี",
+    "ยะลา",
+    "นราธิวาส"
 
 );
 
-$header_trade = array(
-    "สาขาการค้าปลีก",
-    "สาขาการค้าส่ง"
-);
-
-$header_service = array(
-    "สาขาธุรกิจท่องเที่ยว",
-    "สาขาธุรกิจร้านอาหาร",
-    "สาขาธุรกิจสปาและบริการสุขภาพ",
-    "สาขาธุรกิจการแพทย์",
-    "สาขาธุรกิจขนส่งและโลจิสติกส์",
-    "สาขาธุรกิจออกแบบ",
-    "สาขาธุรกิจการศึกษา",
-    "สาขาธุรกิจสารสนเทศ/Digital Content",
-    "สาขาธุรกิจบันเทิง",
-    "สาขาธุรกิจก่อสร้าง",
-    "สาขาธุรกิจที่พักแรม",
-    "สาขาธุรกิจที่ปรึกษา",
-    "สาขาธุรกิจซ่อมบำรุง",
-    "สาขาธุรกิจการกีฬาและนันทนาการ",
-    "สาขาธุรกิจการประชุมและแสดงสินค้า"
-);
-
-$header_farm = array(
-    "สาขาการเกษตรแปรรูป"
-); ?>
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -130,40 +175,54 @@ $header_farm = array(
         $html .= '<td class="" rowspan="2" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:100%;"><strong> หน่วยงาน </strong></div></td>';
         $html .= '<td class="" rowspan="2" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:100%;"  ><strong> ชื่อย่อหน่วยงาน </strong></div></td>';
         $html .= '<td class="" rowspan="2" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:4cm;"  ><strong> รวมทั้งสิ้น</strong></div></td>';
-        $html .= '<td class="" colspan="' . (count($header_br) + 2) . '" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:100%;"  ><strong> ภาคการผลิต </strong></div></td>';
-        $html .= '<td class="" colspan="' . (count($header_trade) + 2) . '" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:100%;"  ><strong> ภาคการค้า </strong></div></td>';
-        $html .= '<td class="" colspan="' . (count($header_service) + 2) . '" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:100%;"  ><strong> ภาคการบริการ </strong></div></td>';
-        $html .= '<td class="" colspan="' . (count($header_farm) + 2) . '" style="vertical-align:middle;background-color:#FFFFFF ;" ><div align="center" style="width:100%;"  ><strong> ภาคการเกษตร </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_n) + 2) . '" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:100%;"  ><strong> ภาคเหนือ </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_c) + 2) . '" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:100%;"  ><strong> ภาคกลาง </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_n_east) + 2) . '" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:100%;"  ><strong> ภาคตะวันออกเฉียงเหนือ </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_w) + 2) . '" style="vertical-align:middle;background-color:#ffffff  ;" ><div align="center" style="width:100%;"  ><strong> ภาคตะวันตก </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_e) + 2) . '" style="vertical-align:middle;background-color:#ffffff ;" ><div align="center" style="width:100%;"  ><strong> ภาคตะวันออก </strong></div></td>';
+        $html .= '<td class="" colspan="' . (count($header_s) + 2) . '" style="vertical-align:middle;background-color:#ffffff  ;" ><div align="center" style="width:100%;"  ><strong> ภาคใต้ </strong></div></td>';
         $html .= '</tr>';
 
         $html .= '<tr >';
-        foreach ($header_br as $key => $value) {
-            $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        foreach ($header_n as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
         }
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
-        foreach ($header_trade as $key => $value) {
-            $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+        foreach ($header_c as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
         }
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
-        foreach ($header_service as $key => $value) {
-            $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+        foreach ($header_n_east as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
         }
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
-        foreach ($header_farm as $key => $value) {
-            $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+        foreach ($header_w as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff ;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
         }
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
-        $html .= '<td class="" style="vertical-align:middle;background-color:#FFFFFF;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+
+        foreach ($header_e as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff ;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        }
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
+
+        foreach ($header_s as $key => $value) {
+            $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff ;" ><div align="center" style="width:3cm;"  ><strong>' . $value . '</strong></div></td>';
+        }
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>รวม</strong></div></td>';
+        $html .= '<td class="" style="vertical-align:middle;background-color:#ffffff;" ><div align="center" style="width:3cm;"  ><strong>%</strong></div></td>';
         $html .= '</tr>';
 
 
         $html .= '</thead>';
         $html .= '<tbody>';
 
-        $total_row = (count($header_br) + 2) + (count($header_trade) + 2) + (count($header_service) + 2) + (count($header_farm) + 2);
+        $total_row = (count($header_n) + 2) + (count($header_c) + 2) + (count($header_n_east) + 2) + (count($header_w) + 2) + (count($header_e) + 2) + (count($header_s) + 2);
 
         $html .= '<tr >';
         $html .= '<th class="" colspan="5" style="vertical-align:middle;background-color:#ffffff;" ><div align="right" style="width:100%;"  ><strong>%</strong></div></th>';

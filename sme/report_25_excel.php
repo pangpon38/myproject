@@ -109,7 +109,7 @@ $header_farm = array(
         $html = '';
         $html .= '<div class="row">
 								<div align="center" >
-									<strong>3. สาขาธุรกิจแนวทาง(โครงการ) ปี ' . $text_year . '</strong>
+									<strong>สาขาธุรกิจแนวทาง (ราย) ปี ' . $text_year . '</strong>
                                    
 								</div>
 							</div>
