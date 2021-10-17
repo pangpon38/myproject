@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap");
+
+* {
+  font-family: "Kanit", sans-serif;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: #fafafa;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ min-height: 100vh;
+ margin: 0;
+}
+
+.container{
+  position: relative;
+  padding: 20px 30px;
+}
+
+
+
