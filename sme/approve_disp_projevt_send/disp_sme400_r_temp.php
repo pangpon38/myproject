@@ -48,7 +48,7 @@ $rec_head = $db->db_fetch_array($query_head);
 		<div class="col-xs-12 col-sm-12">
 			<ol class="breadcrumb">
 				<li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-				<li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+				<li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
 				<li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
 			</ol>
 		</div>
@@ -68,7 +68,7 @@ $rec_head = $db->db_fetch_array($query_head);
 					<!-- Modal -->
 
 					<div class="row">
-						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
 						<?php
 						if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
 						?>
@@ -136,7 +136,7 @@ $rec_head = $db->db_fetch_array($query_head);
 													<tbody>
 														<?php
 														$i = 0;
-														$sql_file = "select * from prjp_400 where PRJP_ID = '" . $PRJP_ID . "'";
+														$sql_file = "select * from prjp_400_temp where PRJP_ID = '" . $PRJP_ID . "'";
 														$query_file = $db->query($sql_file);
 														while ($rec_file = $db->db_fetch_array($query_file)) {
 															$i++;

@@ -131,7 +131,7 @@ while ($x <= $fbe) {
 }
 $c_arr = count($m);
 $sql = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO, a.COST_TYPE,
-				(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+				(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 		  		FROM prjp_project a 
 				WHERE 1=1 AND a.PRJP_LEVEL = '2' AND a.PRJP_PARENT_ID = '" . $PRJP_ID . "' 
 				order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -143,9 +143,9 @@ $sql_binding = "select * from prjp_binding where PRJP_ID = '" . $PRJP_ID . "' an
 $query_binding = $db->query($sql_binding);
 $rec_binding = $db->db_fetch_array($query_binding);
 
-$sql_r_value_now = " SELECT sum(prjp_report_money.BDG_VALUE)as sumnow
-					FROM prjp_report_money
-					JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+$sql_r_value_now = " SELECT sum(prjp_report_money_temp.BDG_VALUE)as sumnow
+					FROM prjp_report_money_temp
+					JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 					WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "'
 					AND (YEAR + RIGHT ('0' + CAST(MONTH AS VARCHAR), 2) <= '" . date("Y") . sprintf("%'02d", date("m")) . "')";
 $query_r_value_now = $db->query($sql_r_value_now);
@@ -209,7 +209,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
     }
     $c_arro = count($mo);
     $sqlo = "SELECT 	a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-				(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+				(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 		  		FROM prjp_project a 
 				WHERE 1=1 AND a.PRJP_LEVEL = '2' AND a.PRJP_PARENT_ID = '" . $rec_head['PRJP_CON_ID'] . "' 
 				order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -276,7 +276,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
                 <li class="active">รายละเอียดผลการใช้จ่ายเงินของกิจกรรม</li>
             </ol>
         </div>
@@ -407,7 +407,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div><br>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div><br>
                         <?php
                         if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
                         ?>
@@ -522,10 +522,10 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 
 
 
-                                                                $sql_value_rp_childo = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-														((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-														FROM prjp_plan_money 
-														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+                                                                $sql_value_rp_childo = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+														((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+														FROM prjp_plan_money_temp 
+														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 														WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_value_rpo['PRJP_ID'] . "'
 														";
                                                                 $query_value_rp_childo = $db->query($sql_value_rp_childo);
@@ -539,17 +539,17 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 //$arr_mp[$rec_value_rp['PRJP_ID'][$rec_value_rp['YEAR'][$rec_value_rp['MONTH']]+=$rec_value_rp['BDG_VALUE'];
                                                                 $sum_pro[$rec_value_rpo['YEAR']][$rec_value_rpo['MONTH']] += $rec_value_rpo['BDG_VALUE'];
                                                             }
-                                                            $sql_r_value_rpo = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-															FROM prjp_report_money 
-															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                            $sql_r_value_rpo = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+															FROM prjp_report_money_temp 
+															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 															WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_head['PRJP_CON_ID'] . "'";
                                                             $query_r_value_rpo = $db->query($sql_r_value_rpo);
                                                             while ($rec_r_value_rpo = $db->db_fetch_array($query_r_value_rpo)) {
                                                                 $arr_rro[$rec_r_value_rpo['PRJP_ID']][$rec_r_value_rpo['YEAR']][$rec_r_value_rpo['MONTH']] = $rec_r_value_rpo['BDG_VALUE'];
 
-                                                                $sql_r_value_rp_childo = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-															FROM prjp_report_money 
-															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                                $sql_r_value_rp_childo = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+															FROM prjp_report_money_temp 
+															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 															WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_r_value_rpo['PRJP_ID'] . "' ";
                                                                 $query_r_value_rp_childo = $db->query($sql_r_value_rp_childo);
                                                                 while ($rec_r_value_rp_childo = $db->db_fetch_array($query_r_value_rp_childo)) {
@@ -842,7 +842,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 <?php
 
                                                                 $sqlChild = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-								(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+								(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 								FROM prjp_project a 
 								WHERE 1=1 AND a.PRJP_LEVEL = '3' AND a.PRJP_PARENT_ID = '" . $reco['PRJP_ID'] . "' 
 								order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -1073,6 +1073,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 												WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "' ";
                                                             $query_value_rp = $db->query($sql_value_rp);
 
+
                                                             /*if($db->db_num_rows($query_value_rp) == 0){
 													
 													$fix_fetch = $db->get_data_rec("select SERVICE_main_project_id, YEAR_BDG from prjp_project where PRJP_PARENT_ID = '".$PRJP_ID."' ");
@@ -1113,16 +1114,16 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 																						'BDG_VALUE'	=>	$f_val,
 																						'TASK_ID'	=>	$m_task 
 																					);
-																		$db->db_insert("prjp_plan_money",$add_fix);
+																		$db->db_insert("prjp_plan_money_temp",$add_fix);
 																	}
 																}
 															}
 														}
 														
-														$sql_value_rp = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-														((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-														FROM prjp_plan_money 
-														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+														$sql_value_rp = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+														((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+														FROM prjp_plan_money_temp 
+														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 														WHERE prjp_project.PRJP_PARENT_ID = '".$PRJP_ID."' ";
 														
 													}
@@ -1134,10 +1135,10 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 
 
 
-                                                                $sql_value_rp_child = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-																	((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-																	FROM prjp_plan_money 
-																	JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+                                                                $sql_value_rp_child = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+																	((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+																	FROM prjp_plan_money_temp 
+																	JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 																	WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_value_rp['PRJP_ID'] . "'
 																	";
                                                                 $query_value_rp_child = $db->query($sql_value_rp_child);
@@ -1152,17 +1153,17 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 $sum_pr[$rec_value_rp['YEAR']][$rec_value_rp['MONTH']] += $rec_value_rp['BDG_VALUE'];
                                                             }
                                                             //ผล
-                                                            $sql_r_value_rp = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-																		FROM prjp_report_money 
-																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                            $sql_r_value_rp = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+																		FROM prjp_report_money_temp 
+																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 																		WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "'";
                                                             $query_r_value_rp = $db->query($sql_r_value_rp);
                                                             while ($rec_r_value_rp = $db->db_fetch_array($query_r_value_rp)) {
                                                                 $arr_rr[$rec_r_value_rp['PRJP_ID']][$rec_r_value_rp['YEAR']][$rec_r_value_rp['MONTH']] = $rec_r_value_rp['BDG_VALUE'];
 
-                                                                $sql_r_value_rp_child = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-																		FROM prjp_report_money 
-																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                                $sql_r_value_rp_child = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+																		FROM prjp_report_money_temp 
+																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 																		WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_r_value_rp['PRJP_ID'] . "' ";
                                                                 $query_r_value_rp_child = $db->query($sql_r_value_rp_child);
                                                                 while ($rec_r_value_rp_child = $db->db_fetch_array($query_r_value_rp_child)) {
@@ -1246,7 +1247,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                         $val_sum_rr_m += $sum_rr[$y_d][$m_d];
                                                                 ?>
                                                                         <td align="right" id="per_status_<?php echo $key + 1; ?>" nowrap>
-                                                                            <?php //if(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100 > 100){echo "100.00";}else{ echo @number_format(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100,2);}
+                                                                            <?php  //if(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100 > 100){echo "100.00";}else{ echo @number_format(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100,2);}
                                                                             ?>
                                                                         </td>
                                                                 <?php
@@ -1766,7 +1767,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                     <?php
 
                                                                     $sqlChild = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-												(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+												(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 												FROM prjp_project a 
 												WHERE 1=1 AND a.PRJP_LEVEL = '3' AND a.PRJP_PARENT_ID = '" . $rec['PRJP_ID'] . "' 
 												order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -2051,7 +2052,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </form>
             </div>

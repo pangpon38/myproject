@@ -328,8 +328,8 @@ while ($rec_desc_include_result = $db->db_fetch_array($query_desc_include_result
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">รายละเอียด</a></li>
-                <li class="active">ผลตัวชี้วัดของผลผลิต</li>
+                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
             </ol>
         </div>
 
@@ -957,7 +957,7 @@ while ($rec_desc_include_result = $db->db_fetch_array($query_desc_include_result
                     // }
                     ?>
 
-                   
+
 
                 </form>
             </div>
@@ -965,6 +965,7 @@ while ($rec_desc_include_result = $db->db_fetch_array($query_desc_include_result
         <?php include($path . "include/footer.php"); ?>
     </div>
 </body>
+
 </html>
 <?php //echo form_model('myModal','ปัญหา-อุปสรรค','show_display','','','1');
 ?>

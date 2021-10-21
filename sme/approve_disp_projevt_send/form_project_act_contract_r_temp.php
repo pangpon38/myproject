@@ -29,8 +29,8 @@ $filter == "";
 if ($_POST['s_round_year_bud'] != "") {
 	$filter .= " AND PRJP_NAME LIKE '%" . $_POST['s_round_year_bud'] . "%' ";
 }
-$sql = "SELECT a.*, b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID, b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID, c.CO_ORG_TYPE_NAME, d.CO_ORG_SECTOR_NAME from prjp_act_contract a 
-LEFT JOIN prjp_act_contract_co_org b on a.PRJP_ACT_CONTRACT_ID = b.PRJP_ACT_CONTRACT_ID
+$sql = "SELECT a.*, b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID, b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID, c.CO_ORG_TYPE_NAME, d.CO_ORG_SECTOR_NAME from prjp_act_contract_temp a 
+LEFT JOIN prjp_act_contract_co_org_temp b on a.PRJP_ACT_CONTRACT_ID = b.PRJP_ACT_CONTRACT_ID
 LEFT JOIN setup_co_org_type c on b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID = c.CO_ORG_TYPE_ID
 LEFT JOIN setup_co_org_sector d on b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID = d.CO_ORG_SECTOR_ID
 WHERE PRJP_ID = '" . $PRJP_ID . "'";
@@ -40,14 +40,14 @@ $num_rows = $db->db_num_rows($query);
 
 
 // $sql_co_org = "SELECT a.CO_ORG_TYPE_ID, a.CO_ORG_TYPE_NAME, b.PRJP_ACT_CONTRACT_ID FROM setup_co_org_type a 
-// LEFT JOIN prjp_act_contract_co_org b on a.CO_ORG_TYPE_ID = b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID
+// LEFT JOIN prjp_act_contract_co_org_temp b on a.CO_ORG_TYPE_ID = b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID
 // WHERE ACTIVE_STATUS = 1 AND PRJP_ACT_CONTRACT_ID = $idc";
 // $query_co_org = $db->query($sql_co_org);
 // $rec_co_org = $db->db_fetch_array($query_co_org);
 // echo $rec_co_org['CO_ORG_TYPE_ID'];
 
 // $sql_co_sector = "SELECT a.CO_ORG_SECTOR_ID FROM setup_co_org_sector a
-// LEFT JOIN prjp_act_contract_co_org b on a.CO_ORG_SECTOR_ID = b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID
+// LEFT JOIN prjp_act_contract_co_org_temp b on a.CO_ORG_SECTOR_ID = b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID
 // WHERE ACTIVE_STATUS = 1 AND PRJP_ACT_CONTRACT_ID = $idc ";
 // $query_co_sector = $db->query($sql_co_sector);
 // $rec_co_sector = $db->db_fetch_array($query_co_sector);
@@ -233,7 +233,7 @@ $num_rows = $db->db_num_rows($query);
 		<div class="col-xs-12 col-sm-12">
 			<ol class="breadcrumb">
 				<li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-				<li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+				<li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
 				<li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
 			</ol>
 		</div>
@@ -250,7 +250,7 @@ $num_rows = $db->db_num_rows($query);
 					<!-- Modal -->
 
 					<div class="row">
-						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
 						<?php
 						if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
 						?>

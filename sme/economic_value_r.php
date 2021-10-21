@@ -453,9 +453,9 @@ $rec_data = $db->db_fetch_array($query);
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">รายละเอียด</a>
+                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a>
                 </li>
-                <li class="active">ผลตัวชี้วัดของผลผลิต</li>
+                <li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
             </ol>
         </div>
 
@@ -719,13 +719,13 @@ $rec_data = $db->db_fetch_array($query);
                                                                 <td colspan="1"> <input style="" type="text" <?php echo $disables_txt; ?> id="<?php echo $arr_eco_field[$no]; ?>_same" name="<?php echo $arr_eco_field[$no]; ?>_same" class="form-control text-right" onblur="NumberFormat(this,2);sum_eco_1(2);sum_eco_9(2);eco_result('<?php echo $arr_eco_field[$no]; ?>');sum_eco_value();" value="<?php echo number_format($rec_data[$arr_eco_field[$no] . '_same'], 2) ?>">
                                                                 </td>
                                                                 <td colspan="1">
-                                                                    <textarea <?php echo $readonly_txt ?>  style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_end" name="<?php echo $arr_eco_field[$no]; ?>_cal_end" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_end'] ?></textarea>
+                                                                    <textarea <?php echo $readonly_txt ?> style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_end" name="<?php echo $arr_eco_field[$no]; ?>_cal_end" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_end'] ?></textarea>
                                                                 </td>
                                                                 <td colspan="1">
-                                                                    <textarea <?php echo $readonly_txt ?>  style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_year" name="<?php echo $arr_eco_field[$no]; ?>_cal_year" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_year'] ?></textarea>
+                                                                    <textarea <?php echo $readonly_txt ?> style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_year" name="<?php echo $arr_eco_field[$no]; ?>_cal_year" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_year'] ?></textarea>
                                                                 </td>
                                                                 <td colspan="1">
-                                                                    <textarea <?php echo $readonly_txt ?>  style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_data" name="<?php echo $arr_eco_field[$no]; ?>_cal_data" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_data'] ?></textarea>
+                                                                    <textarea <?php echo $readonly_txt ?> style="width:100%" <?php echo $readonly_txt ?> row="3" id="<?php echo $arr_eco_field[$no]; ?>_cal_data" name="<?php echo $arr_eco_field[$no]; ?>_cal_data" class="form-control"><?php echo $rec_data[$arr_eco_field[$no] . '_cal_data'] ?></textarea>
                                                                 </td>
                                                             </tr>
                                                         <?php } ?>
@@ -779,7 +779,7 @@ $rec_data = $db->db_fetch_array($query);
                                                                 } else {
                                                                     if ($no == '16.1' || $no == '16.2') { ?>
                                                                         <td colspan="6">
-                                                                            <textarea <?php echo $readonly_txt ?>  id="<?php echo $arr_eco_field[$no]; ?>_comment" name="<?php echo $arr_eco_field[$no]; ?>_comment" class="form-control"><?php echo text($rec_data[$arr_eco_field[$no] . '_comment']); ?></textarea>
+                                                                            <textarea <?php echo $readonly_txt ?> id="<?php echo $arr_eco_field[$no]; ?>_comment" name="<?php echo $arr_eco_field[$no]; ?>_comment" class="form-control"><?php echo text($rec_data[$arr_eco_field[$no] . '_comment']); ?></textarea>
                                                                         </td>
                                                                     <?php
                                                                     } else { ?>
@@ -816,7 +816,7 @@ $rec_data = $db->db_fetch_array($query);
                                                                         } ?>
                                                                     </td>
                                                                     <td colspan="6">
-                                                                        <textarea <?php echo $readonly_txt ?>  id="<?php echo $arr_eco_field[$no]; ?>_comment" name="<?php echo $arr_eco_field[$no]; ?>_comment" class="form-control"><?php echo text($rec_data[$arr_eco_field[$no] . '_comment']); ?></textarea>
+                                                                        <textarea <?php echo $readonly_txt ?> id="<?php echo $arr_eco_field[$no]; ?>_comment" name="<?php echo $arr_eco_field[$no]; ?>_comment" class="form-control"><?php echo text($rec_data[$arr_eco_field[$no] . '_comment']); ?></textarea>
                                                                     </td>
                                                                 </tr>
                                                         <?php

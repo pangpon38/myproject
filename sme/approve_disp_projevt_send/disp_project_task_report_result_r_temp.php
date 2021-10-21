@@ -179,7 +179,7 @@ $num_rows = $db->db_num_rows($query);
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
                 <li class="active">รายละเอียดผลสัมฤทธิ์ที่คาดว่าจะได้รับ</li>
             </ol>
         </div>
@@ -200,7 +200,7 @@ $num_rows = $db->db_num_rows($query);
                     <input type="hidden" id="OPEN_FORM" name="OPEN_FORM" value="" />
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12"> </div>
@@ -265,7 +265,7 @@ $num_rows = $db->db_num_rows($query);
                                                             $year_me = $yea . $mea;
                                                             $row_cola = (((12 - $msa) + 1) + ((($yea - $ysa) - 1) * 12) + (12 - (12 - $mea)));
 
-                                                            $sqlChild = " SELECT * FROM service_task_month_result WHERE task_result_id = '{$rec['task_result_id']}' ";
+                                                            $sqlChild = " SELECT * FROM service_task_month_result_temp WHERE task_result_id = '{$rec['task_result_id']}' ";
                                                             $queryChild = $db->query($sqlChild);
                                                             $arrChild = $arrChild2 = array();
                                                             $totalChild = 0;

@@ -5,31 +5,10 @@ include($path . "include/config_header_top.php");
 $link = "r=home&menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id;  /// for mobile
 $paramlink = url2code($link);
 $sub_menu = "";
-$ACT = '30';
+$ACT = '7';
+
 $disables_txt = "disabled";
 $readonly_txt = "readonly";
-
-if ($_GET['proc'] == 'save_result') {
-    $result_value = $_POST['result_value'];
-    if (count($result_value) > 0) {
-        foreach ($result_value as $task => $arr) {
-            foreach ($arr as $month => $val) {
-
-                $db->query(" delete from service_task_month_result_temp WHERE task_result_id = '" . $task . "' and task_month = '" . $month . "' ");
-                $db->query(" insert into service_task_month_result_temp 
-				(task_result_id, task_month, task_value, project_id, bdg_type, act_project_id, main_project_id, result_value )
-				select task_result_id, task_month, task_value, project_id, bdg_type, act_project_id, main_project_id, '" . str_replace(',', '', $val) . "' 
-				FROM service_task_month_result 
-				WHERE task_result_id = '" . $task . "' and task_month = '" . $month . "' ");
-
-                /*$fields = array('result_value' => str_replace(',','',$val) );
-				$db->db_update("service_task_month_result", $fields, " task_result_id = '" . $task . "' and task_month = '".$month."' ");*/
-            }
-        }
-    }
-    echo 'บันทึกข้อมูลเรียบร้อย';
-    exit;
-}
 
 if ($_POST['PRJP_ID'] != '') {
     $PRJP_ID = $_POST['PRJP_ID'];
@@ -110,25 +89,6 @@ $num_rows = $db->db_num_rows($query);
     <?php include($path . "include/inc_main_top.php"); ?>
     <script src="js/disp_project_act_money.js?<?php echo rand(); ?>"></script>
     <script type="text/javascript">
-        async function sum_month(task) {
-            var sum = 0;
-            $.each($('input[id^=task_' + task + '_]'), await
-                function() {
-                    var this_val = this.value;
-                    this_val = this_val.split(',').join('');
-                    if (isNaN(this_val) || this_val == '') {
-                        $(this).val('0.00');
-                        this_val = 0;
-                    } else {
-                        this_val = parseFloat(this_val);
-                    }
-                    sum += this_val;
-                });
-            //NumberFormat(this,2)
-            $('#sum_task_' + task).html(number_format_txt(sum, 2));
-
-        }
-
         function chk_old(id) {
             if (id == 0) {
                 $("#hide_old").val(1);
@@ -179,7 +139,7 @@ $num_rows = $db->db_num_rows($query);
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li><a href="disp_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>"><?php echo Showmenu($menu_sub_id); ?></a></li>
                 <li class="active">รายละเอียดผลสัมฤทธิ์ที่คาดว่าจะได้รับ</li>
             </ol>
         </div>
@@ -200,7 +160,7 @@ $num_rows = $db->db_num_rows($query);
                     <input type="hidden" id="OPEN_FORM" name="OPEN_FORM" value="" />
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu_r.php"); ?></div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12"> </div>
@@ -230,7 +190,7 @@ $num_rows = $db->db_num_rows($query);
                                                         <th width="40px">
                                                             <div align="center"><strong>ลำดับ</strong></div>
                                                         </th>
-                                                        <th width="230px" colspan="2">
+                                                        <th width="230px">
                                                             <div align="center"><strong>ผลสัมฤทธิ์ที่คาดว่าจะได้รับ</strong></div>
                                                         </th>
                                                         <th width="100px">
@@ -267,23 +227,20 @@ $num_rows = $db->db_num_rows($query);
 
                                                             $sqlChild = " SELECT * FROM service_task_month_result WHERE task_result_id = '{$rec['task_result_id']}' ";
                                                             $queryChild = $db->query($sqlChild);
-                                                            $arrChild = $arrChild2 = array();
+                                                            $arrChild = array();
                                                             $totalChild = 0;
                                                             while ($recChild = $db->db_fetch_array($queryChild)) {
                                                                 $arrChild[$recChild['task_month']] = $recChild['task_value'];
-                                                                $arrChild2[$recChild['task_month']] = $recChild['result_value'];
                                                                 $totalChild += $recChild['task_value'];
-                                                                $totalChild2 += $recChild['result_value'];
                                                             }
 
                                                     ?>
                                                             <tr bgcolor="#FFFFFF" class="">
-                                                                <td align="center" rowspan="2" width="50px"><?php echo $l; ?>.</td>
-                                                                <td align="left" rowspan="2" width="222px">
-                                                                    <textarea rows="3" cols="15" class="prjp-name-show" <?php echo $readonly_txt; ?>><?php echo text($rec['result_name']); ?></textarea>
+                                                                <td align="center" width="50px"><?php echo $l; ?>.</td>
+                                                                <td align="left" width="222px">
+                                                                    <textarea <?php echo $disables_txt; ?> rows="3" cols="15" class="prjp-name-show"><?php echo text($rec['result_name']); ?></textarea>
                                                                 </td>
-                                                                <td align="center" style="background:#bebebe">แผน</td>
-                                                                <td align="center" style="background:#eaeaea"><?php echo number_format($totalChild, 2); ?></td>
+                                                                <td align="center"><?php echo number_format($totalChild, 2); ?></td>
                                                                 <?php
                                                                 $i = 1;
                                                                 foreach ($rr as $key => $val) {
@@ -291,28 +248,12 @@ $num_rows = $db->db_num_rows($query);
                                                                         $m_d = substr($val, 4, 2);
                                                                         $y_d = substr($val, 0, 4);
                                                                 ?>
-                                                                        <td align="right" style="background:#eaeaea"><?php echo number_format($arrChild[$m_d], 2); ?></td>
+                                                                        <td align="right"><?php echo number_format($arrChild[$m_d], 2); ?></td>
                                                                 <?php
                                                                     }
                                                                     $i++;
                                                                 }
                                                                 ?>
-                                                            </tr>
-                                                            <tr>
-                                                                <td align="center" style="background:#7fadad">ผล</td>
-                                                                <td align="center" style="background:#afeeee" id="sum_task_<?php echo $rec['task_result_id']; ?>"><?php echo number_format($totalChild2, 2); ?></td>
-                                                                <?php
-                                                                foreach ($rr as $key => $val) {
-                                                                    if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                        $m_d = substr($val, 4, 2);
-                                                                        $y_d = substr($val, 0, 4);
-                                                                ?>
-                                                                        <td align="right" style="background:#afeeee">
-                                                                            <input <?php echo $disables_txt; ?> name="result_value[<?php echo $rec['task_result_id']; ?>][<?php echo $m_d; ?>]" type="text" size="5" class="form-control text-right" value="<?php echo number_format($arrChild2[$m_d], 2); ?>" id="task_<?php echo $rec['task_result_id'] . "_" . $m_d; ?>" onblur="NumberFormat(this,2);sum_month('<?php echo $rec['task_result_id']; ?>');">
-                                                                        </td>
-                                                                <?php
-                                                                    }
-                                                                } ?>
                                                             </tr>
                                                     <?php
                                                             $l++;
@@ -324,7 +265,6 @@ $num_rows = $db->db_num_rows($query);
                                                 </tbody>
                                             </table>
                                         </div>
-
                                     <?php
                                         $mstart = $mstart + 12;
                                         $rowtb = $rowtb + 1;

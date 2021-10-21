@@ -50,7 +50,7 @@ if ($_POST['PRJP_ID'] != '') {
 $month = array("10" => "ต.ค.", "11" => "พ.ย.", "12" => "ธ.ค.", "1" => "ม.ค.", "2" => "ก.พ.", "3" => "มี.ค.", "4" => "เม.ย.", "5" => "พ.ค.", "6" => "มิ.ย.", "7" => "ก.ค.", "8" => "ส.ค.", "9" => "ก.ย.");
 $month_full = array("1" => "มกราคม", "2" => "กุมภาพันธ์", "3" => "มีนาคม", "4" => "เมษายน", "5" => "พฤษภาคม", "6" => "มิถุนายน", "7" => "กรกฎาคม", "8" => "สิงหาคม", "9" => "กันยายน", "10" => "ตุลาคม", "11" => "พฤศจิกายน", "12" => "ธันวาคม");
 $month_full_bdg = array("10" => "ตุลาคม", "11" => "พฤศจิกายน", "12" => "ธันวาคม", "1" => "มกราคม", "2" => "กุมภาพันธ์", "3" => "มีนาคม", "4" => "เมษายน", "5" => "พฤษภาคม", "6" => "มิถุนายน", "7" => "กรกฎาคม", "8" => "สิงหาคม", "9" => "กันยายน");
-$sql_head = "SELECT PRJP_CODE,PRJP_NAME,EDATE_PRJP,SDATE_PRJP,PROLONG_STATUS,MONEY_BDG,PRJP_CON_ID,PRJP_SET_STIME,PRJP_SET_ETIME,PRJP_SET_TIME_CHK, COST_TYPE
+$sql_head = "SELECT PRJP_CODE,PRJP_NAME,EDATE_PRJP,SDATE_PRJP,PROLONG_STATUS,MONEY_BDG,PRJP_CON_ID,PRJP_SET_STIME,PRJP_SET_ETIME,PRJP_SET_TIME_CHK 
 	FROM prjp_project 
 	left join prjp_set_time on prjp_set_time.PRJP_ID = prjp_project.PRJP_ID
 		AND '" . date('Y-m-d') . "' BETWEEN prjp_set_time.PRJP_SET_STIME AND prjp_set_time.PRJP_SET_ETIME
@@ -130,8 +130,8 @@ while ($x <= $fbe) {
     }
 }
 $c_arr = count($m);
-$sql = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO, a.COST_TYPE,
-				(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+$sql = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
+				(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 		  		FROM prjp_project a 
 				WHERE 1=1 AND a.PRJP_LEVEL = '2' AND a.PRJP_PARENT_ID = '" . $PRJP_ID . "' 
 				order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -143,9 +143,9 @@ $sql_binding = "select * from prjp_binding where PRJP_ID = '" . $PRJP_ID . "' an
 $query_binding = $db->query($sql_binding);
 $rec_binding = $db->db_fetch_array($query_binding);
 
-$sql_r_value_now = " SELECT sum(prjp_report_money.BDG_VALUE)as sumnow
-					FROM prjp_report_money
-					JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+$sql_r_value_now = " SELECT sum(prjp_report_money_temp.BDG_VALUE)as sumnow
+					FROM prjp_report_money_temp
+					JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 					WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "'
 					AND (YEAR + RIGHT ('0' + CAST(MONTH AS VARCHAR), 2) <= '" . date("Y") . sprintf("%'02d", date("m")) . "')";
 $query_r_value_now = $db->query($sql_r_value_now);
@@ -209,7 +209,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
     }
     $c_arro = count($mo);
     $sqlo = "SELECT 	a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-				(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+				(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 		  		FROM prjp_project a 
 				WHERE 1=1 AND a.PRJP_LEVEL = '2' AND a.PRJP_PARENT_ID = '" . $rec_head['PRJP_CON_ID'] . "' 
 				order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -217,7 +217,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
     $queryo = $db->query($sqlo);
     $num_rowso = $db->db_num_rows($queryo);
     //////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 ?>
 <!DOCTYPE html>
@@ -267,6 +266,10 @@ if ($rec_head['PRJP_CON_ID'] != '') {
             $("#tbo_" + id).show();
             $("#tbvo_" + id).show();
         }
+        var fields = document.getElementById("readonly").getElementsByTagName('*');
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].disabled = true;
+        }
     </script>
 </head>
 
@@ -276,12 +279,12 @@ if ($rec_head['PRJP_CON_ID'] != '') {
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
-                <li class="active">รายละเอียดผลการใช้จ่ายเงินของกิจกรรม</li>
+                <li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>"><?php echo Showmenu($menu_sub_id); ?></a></li>
+                <li class="active">ผลการใช้จ่ายเงินของกิจกรรม</li>
             </ol>
         </div>
 
-        <div class="col-xs-12 col-sm-12 page-prjp-money">
+        <div id="readonly" class="col-xs-12 col-sm-12 page-prjp-money">
             <div class="groupdata">
                 <form id="frm-search" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input name="proc" type="hidden" id="proc" value="<?php echo $proc; ?>">
@@ -297,22 +300,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                     <input type="hidden" id="MONEY_BDG" name="MONEY_BDG" value="<?php echo $rec_head['MONEY_BDG']; ?>">
                     <input type="hidden" id="MONEY_BDG_OLD" name="MONEY_BDG_OLD" value="<?php echo $rec_dataold['MONEY_BDG']; ?>">
                     <input type="hidden" id="OPEN_FORM" name="OPEN_FORM" value="" />
-
-                    <!-- สถานะผลเทียบแผน -->
-                    <?php
-                    $sql_status = "SELECT * FROM config_rate_status WHERE YEAR_BDG = '" . $_SESSION['year_round'] . "' 
-                        ORDER BY rate_status_percent DESC";
-                    $query_status =  $db->query($sql_status);
-                    $i = 1;
-                    while ($rec_status = $db->db_fetch_array($query_status)) {
-                    ?>
-                        <input type="hidden" id="status_per_<?php echo $i; ?>" value="<?php echo $rec_status['rate_status_percent'] ?>">
-                        <input type="hidden" id="status_name_<?php echo $i; ?>" value="<?php echo text($rec_status['rate_status_name']) ?>">
-                        <input type="hidden" id="status_color_<?php echo $i; ?>" value="<?php echo $rec_status['rate_status_color'] ?>">
-
-                    <?php $i++;
-                    } ?>
-
                     <!-- Modal -->
 
                     <div id="myModal" class="modal fade" role="dialog">
@@ -407,7 +394,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div><br>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div><br>
                         <?php
                         if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
                         ?>
@@ -438,7 +425,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                 </div>
                                 <div class="panel-body epm-gradient">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-12"><?php echo $print_form; ?></div>
+                                        <!-- <div class="col-xs-12 col-sm-12"><?php echo $print_form; ?></div> -->
                                     </div>
 
                                     <?php if ($rec_head['PRJP_CON_ID'] != '') { ?>
@@ -471,7 +458,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                             for ($rowo = 1; $rowo <= $row_who; $rowo++) {
                                             ?>
                                                 <div id="tbo_<?php echo $rowo; ?>" class=" col-xs-12 col-sm-12 htbo data_old" style="display:none;">
-                                                    <table width="22%" class="table table-bordered table-striped table-hover table-condensed">
+                                                    <table id="frm-search" width="22%" class="table table-bordered table-striped table-hover table-condensed">
                                                         <thead>
                                                             <tr class="bgHead">
                                                                 <th width="40px" rowspan="2">
@@ -509,10 +496,10 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            $sql_value_rpo = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-									((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-									FROM prjp_plan_money 
-									JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+                                                            $sql_value_rpo = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+									((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+									FROM prjp_plan_money_temp 
+									JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 									WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_head['PRJP_CON_ID'] . "'
 									";
                                                             $query_value_rpo = $db->query($sql_value_rpo);
@@ -522,10 +509,10 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 
 
 
-                                                                $sql_value_rp_childo = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-														((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-														FROM prjp_plan_money 
-														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+                                                                $sql_value_rp_childo = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+														((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+														FROM prjp_plan_money_temp 
+														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 														WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_value_rpo['PRJP_ID'] . "'
 														";
                                                                 $query_value_rp_childo = $db->query($sql_value_rp_childo);
@@ -539,17 +526,17 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 //$arr_mp[$rec_value_rp['PRJP_ID'][$rec_value_rp['YEAR'][$rec_value_rp['MONTH']]+=$rec_value_rp['BDG_VALUE'];
                                                                 $sum_pro[$rec_value_rpo['YEAR']][$rec_value_rpo['MONTH']] += $rec_value_rpo['BDG_VALUE'];
                                                             }
-                                                            $sql_r_value_rpo = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-															FROM prjp_report_money 
-															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                            $sql_r_value_rpo = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+															FROM prjp_report_money_temp 
+															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 															WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_head['PRJP_CON_ID'] . "'";
                                                             $query_r_value_rpo = $db->query($sql_r_value_rpo);
                                                             while ($rec_r_value_rpo = $db->db_fetch_array($query_r_value_rpo)) {
                                                                 $arr_rro[$rec_r_value_rpo['PRJP_ID']][$rec_r_value_rpo['YEAR']][$rec_r_value_rpo['MONTH']] = $rec_r_value_rpo['BDG_VALUE'];
 
-                                                                $sql_r_value_rp_childo = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-															FROM prjp_report_money 
-															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                                $sql_r_value_rp_childo = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+															FROM prjp_report_money_temp 
+															JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 															WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_r_value_rpo['PRJP_ID'] . "' ";
                                                                 $query_r_value_rp_childo = $db->query($sql_r_value_rp_childo);
                                                                 while ($rec_r_value_rp_childo = $db->db_fetch_array($query_r_value_rp_childo)) {
@@ -561,7 +548,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                             }
                                                             ?>
                                                             <tr>
-                                                                <td colspan="4" rowspan="3" align="right">รวมแผนการใช้จ่ายเงิน (%)</td>
+                                                                <td colspan="4" rowspan="2" align="right">รวมแผนการใช้จ่ายเงิน (%)</td>
                                                                 <td align="center" nowrap>แผนสะสม</td>
                                                                 <?php
                                                                 if ($rowo == 1) {
@@ -592,7 +579,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 } //foreach
                                                                 ?>
                                                             </tr>
-
                                                             <tr>
                                                                 <td align="center">ผลสะสม</td>
                                                                 <?php
@@ -842,7 +828,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 <?php
 
                                                                 $sqlChild = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-								(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+								(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 								FROM prjp_project a 
 								WHERE 1=1 AND a.PRJP_LEVEL = '3' AND a.PRJP_PARENT_ID = '" . $reco['PRJP_ID'] . "' 
 								order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -978,7 +964,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                                     ?>
                                                                                         <input type="hidden" id="VCHK_YEAR_OLD_<?php echo $ii; ?>_<?php echo $k; ?>" name="VCHK_YEAR_OLD[]" value="<?php echo $mck; ?>">
                                                                                         <input name="YEAR[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_do; ?>][<?php echo $m_do; ?>]" id="YEAR_<?php echo $key; ?>" type="hidden" size="5" class="form-control number_format" value="<?php echo ($y_do); ?>">
-                                                                                        <input prjp-parent-id="<?php echo $recChild["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $recChild['PRJP_ID']; ?>" month="<?php echo $m_do; ?>" year="<?php echo $y_do; ?>" name="BDG_VALUE_OLD[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_do; ?>][<?php echo $m_do; ?>]" id="BDG_VALUE_OLD_<?php echo $recChild['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" size="5" class="form-control number_format PVO_<?php echo $ii; ?>_<?php echo $k; ?>" disabled value="<?php echo number_format($arr_rro[$recChild['PRJP_ID']][$y_do][$m_do], 2); ?>" onBlur="Chk_sval_old('<?php echo $c_arro; ?>',<?php echo $recChild['PRJP_ID'];  ?>); 
+                                                                                        <input prjp-parent-id="<?php echo $recChild["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $recChild['PRJP_ID']; ?>" month="<?php echo $m_do; ?>" year="<?php echo $y_do; ?>" name="BDG_VALUE_OLD[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_do; ?>][<?php echo $m_do; ?>]" id="BDG_VALUE_OLD_<?php echo $recChild['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" size="5" class="form-control number_format PVO_<?php echo $ii; ?>_<?php echo $k; ?>" value="<?php echo number_format($arr_rro[$recChild['PRJP_ID']][$y_do][$m_do], 2); ?>" onBlur="Chk_sval_old('<?php echo $c_arro; ?>',<?php echo $recChild['PRJP_ID']; ?>); 
 									cal_child(this); NumberFormat(this,2);" style="text-align:right;<?php //echo $bgdis; 
                                                                                                     ?>" <?php //echo $distxt; 
                                                                                                         ?>><?php } ?>
@@ -1024,7 +1010,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                             for ($row = 1; $row <= $row_wh; $row++) {
                                             ?>
                                                 <div id="tb_<?php echo $row; ?>" class=" col-xs-12 col-sm-12 ">
-                                                    <table width="22%" class="table table-bordered table-striped table-hover table-condensed">
+                                                    <table id="frm-search" width="22%" class="table table-bordered table-striped table-hover table-condensed">
                                                         <thead>
                                                             <tr class="bgHead table-head-rmoney">
                                                                 <th width="40px" rowspan="2">
@@ -1032,9 +1018,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 </th>
                                                                 <th width="230px" rowspan="2">
                                                                     <div align="center"><strong>ชื่อกิจกรรม</strong></div>
-                                                                </th>
-                                                                <th width="230px" rowspan="2">
-                                                                    <div align="center"><strong>ประเภทค่าใช้จ่าย</strong></div>
                                                                 </th>
                                                                 <th width="85px" rowspan="2">
                                                                     <div align="center"><strong>เงินที่วางแผน</strong></div>
@@ -1065,79 +1048,23 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            //แผน
-                                                            $sql_value_rp = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-												((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-												FROM prjp_plan_money 
-												JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
-												WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "' ";
+                                                            $sql_value_rp = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+												((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+												FROM prjp_plan_money_temp 
+												JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
+												WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "'
+												";
                                                             $query_value_rp = $db->query($sql_value_rp);
-
-                                                            /*if($db->db_num_rows($query_value_rp) == 0){
-													
-													$fix_fetch = $db->get_data_rec("select SERVICE_main_project_id, YEAR_BDG from prjp_project where PRJP_PARENT_ID = '".$PRJP_ID."' ");
-													$fix_pj_id = $fix_fetch['SERVICE_main_project_id'];
-													$fix_bdg_year = $fix_fetch['YEAR_BDG'];
-													
-													if($fix_pj_id > 0){
-														$url = "http://61.91.223.53/SME_BDG/api_ipa/task_plan_request.php?id=".$fix_pj_id;
-														$ch = curl_init();
-														curl_setopt($ch, CURLOPT_URL, $url);
-														curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-														curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false );
-														$sResponse = curl_exec($ch);
-														curl_close($ch);
-														$fix_data =  json_decode($sResponse, true);
-														
-														$url = "http://61.91.223.53/SME_BDG/api_ipa/task_month_request.php?id=".$fix_pj_id;
-														$ch = curl_init();
-														curl_setopt($ch, CURLOPT_URL, $url);
-														curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-														curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false );
-														$sResponse = curl_exec($ch);
-														curl_close($ch);
-														$fix_data2 =  json_decode($sResponse, true);
-														
-														foreach($fix_data as $m_task => $r_fix){
-															$f_prjp_id = $db->get_data_field("select PRJP_ID from prjp_project where PRJP_PARENT_ID = '".$PRJP_ID."' and PRJP_NAME like '%".ctext($r_fix['name_plan'])."%' ","PRJP_ID");
-															
-															if($f_prjp_id > 0){
-																$db->query(" UPDATE prjp_project set SERVICE_TASK_MONEY_ID = '".$m_task."' where PRJP_ID = '".$f_prjp_id."' ");
-																if($fix_data2[$m_task]['money']){
-																	foreach($fix_data2[$m_task]['money'] as $f_month=>$f_val){
-																		$f_year = $f_month > 9 ? ($fix_bdg_year-1):$fix_bdg_year;
-																		$add_fix = array(
-																						'PRJP_ID'	=>	$f_prjp_id,
-																						'MONTH'		=>	$f_month,
-																						'YEAR'		=>	$f_year,
-																						'BDG_VALUE'	=>	$f_val,
-																						'TASK_ID'	=>	$m_task 
-																					);
-																		$db->db_insert("prjp_plan_money",$add_fix);
-																	}
-																}
-															}
-														}
-														
-														$sql_value_rp = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-														((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-														FROM prjp_plan_money 
-														JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
-														WHERE prjp_project.PRJP_PARENT_ID = '".$PRJP_ID."' ";
-														
-													}
-												}*/
-
                                                             $sum_pr = array();
                                                             while ($rec_value_rp = $db->db_fetch_array($query_value_rp)) {
                                                                 $arr_pr[$rec_value_rp['PRJP_ID']][$rec_value_rp['YEAR']][$rec_value_rp['MONTH']] = $rec_value_rp['BDG_VALUE'];
 
 
 
-                                                                $sql_value_rp_child = "select prjp_plan_money.BDG_VALUE,prjp_plan_money.MONTH,prjp_project.PRJP_ID,prjp_plan_money.YEAR,
-																	((prjp_plan_money.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
-																	FROM prjp_plan_money 
-																	JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money.PRJP_ID
+                                                                $sql_value_rp_child = "select prjp_plan_money_temp.BDG_VALUE,prjp_plan_money_temp.MONTH,prjp_project.PRJP_ID,prjp_plan_money_temp.YEAR,
+																	((prjp_plan_money_temp.BDG_VALUE/prjp_project.MONEY_BDG)*100)as per_val,prjp_project.MONEY_BDG
+																	FROM prjp_plan_money_temp 
+																	JOIN prjp_project ON prjp_project.PRJP_ID = prjp_plan_money_temp.PRJP_ID
 																	WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_value_rp['PRJP_ID'] . "'
 																	";
                                                                 $query_value_rp_child = $db->query($sql_value_rp_child);
@@ -1151,18 +1078,17 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 //$arr_mp[$rec_value_rp['PRJP_ID'][$rec_value_rp['YEAR'][$rec_value_rp['MONTH']]+=$rec_value_rp['BDG_VALUE'];
                                                                 $sum_pr[$rec_value_rp['YEAR']][$rec_value_rp['MONTH']] += $rec_value_rp['BDG_VALUE'];
                                                             }
-                                                            //ผล
-                                                            $sql_r_value_rp = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-																		FROM prjp_report_money 
-																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                            $sql_r_value_rp = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+																		FROM prjp_report_money_temp 
+																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 																		WHERE prjp_project.PRJP_PARENT_ID = '" . $PRJP_ID . "'";
                                                             $query_r_value_rp = $db->query($sql_r_value_rp);
                                                             while ($rec_r_value_rp = $db->db_fetch_array($query_r_value_rp)) {
                                                                 $arr_rr[$rec_r_value_rp['PRJP_ID']][$rec_r_value_rp['YEAR']][$rec_r_value_rp['MONTH']] = $rec_r_value_rp['BDG_VALUE'];
 
-                                                                $sql_r_value_rp_child = "select prjp_report_money.BDG_VALUE,prjp_report_money.MONTH,prjp_project.PRJP_ID,prjp_report_money.YEAR 
-																		FROM prjp_report_money 
-																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money.PRJP_ID
+                                                                $sql_r_value_rp_child = "select prjp_report_money_temp.BDG_VALUE,prjp_report_money_temp.MONTH,prjp_project.PRJP_ID,prjp_report_money_temp.YEAR 
+																		FROM prjp_report_money_temp 
+																		JOIN prjp_project ON prjp_project.PRJP_ID = prjp_report_money_temp.PRJP_ID
 																		WHERE prjp_project.PRJP_PARENT_ID = '" . $rec_r_value_rp['PRJP_ID'] . "' ";
                                                                 $query_r_value_rp_child = $db->query($sql_r_value_rp_child);
                                                                 while ($rec_r_value_rp_child = $db->db_fetch_array($query_r_value_rp_child)) {
@@ -1174,7 +1100,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                             }
                                                             ?>
                                                             <tr class="table-head2-rmoney">
-                                                                <td colspan="5" rowspan="3" align="right">รวมแผนการใช้จ่ายเงิน (%)</td>
+                                                                <td colspan="4" rowspan="2" align="right">รวมแผนการใช้จ่ายเงิน (%)</td>
                                                                 <td align="center" nowrap>แผนสะสม</td>
                                                                 <?php
                                                                 if ($row == 1) {
@@ -1194,14 +1120,8 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                             } else {
                                                                                 if ((@($val_sum_pr_m / $rec_head['MONEY_BDG'])) * 100 > 100) {
                                                                                     echo "100.00";
-                                                                            ?>
-                                                                                    <input type="hidden" id="test_<?php echo $key + 1; ?>" value="<?php echo "100.00";  ?>">
-                                                                                <?php
                                                                                 } else {
                                                                                     echo @number_format(($val_sum_pr_m / $rec_head['MONEY_BDG']) * 100, 2);
-                                                                                ?>
-                                                                                    <input type="hidden" id="plan_<?php echo $key + 1; ?>" value="<?php echo @number_format(($val_sum_pr_m / $rec_head['MONEY_BDG']) * 100, 2); ?>">
-                                                                            <?php
                                                                                 }
                                                                             }
                                                                             ?>
@@ -1233,30 +1153,8 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                 ?>
                                                             </tr>
 
-                                                            <tr class="table-head6-rmoney">
-                                                                <td align="center" nowrap>สถานะผลเทียบแผน</td>
-                                                                <?php
-                                                                if ($row == 1) {
-                                                                    $val_sum_rr_m = 0;
-                                                                }
-                                                                foreach ($rr as $key => $val) {
-                                                                    if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                        $m_d = substr($val, 4, 2) * 1;
-                                                                        $y_d = substr($val, 0, 4);
-                                                                        $val_sum_rr_m += $sum_rr[$y_d][$m_d];
-                                                                ?>
-                                                                        <td align="right" id="per_status_<?php echo $key + 1; ?>" nowrap>
-                                                                            <?php //if(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100 > 100){echo "100.00";}else{ echo @number_format(($val_sum_rr_m/$rec_head['MONEY_BDG'])*100,2);}
-                                                                            ?>
-                                                                        </td>
-                                                                <?php
-                                                                    } //if 
-                                                                } //foreach
-                                                                ?>
-                                                            </tr>
-
                                                             <tr class="table-head4-rmoney">
-                                                                <td colspan="5" rowspan="2" align="right">รวมแผนการใช้จ่ายเงิน</td>
+                                                                <td colspan="4" rowspan="2" align="right">รวมแผนการใช้จ่ายเงิน</td>
                                                                 <td align="center" nowrap>แผนสะสม</td>
                                                                 <?php
                                                                 if ($row == 1) {
@@ -1333,7 +1231,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                     <tr bgcolor="#FFFFFF" class="table-body-rmoney">
                                                                         <td align="center" rowspan="4" width="50px"><?php echo $rec['ORDER_NO']; ?>. <input type="hidden" id="PRJP_ACT_ID[]" name="PRJP_ACT_ID[]" value="<?php echo $rec['PRJP_ID']; ?>"></td>
                                                                         <td rowspan="4" align="left" width="215px"><textarea rows="6" cols="10" class="prjp-name-show" disabled><?php echo text($rec['PRJP_NAME']); ?></textarea></td>
-                                                                        <td rowspan="4" align="center"><?php echo $arr_bdg_cost[$rec['COST_TYPE']]; ?></td>
                                                                         <td rowspan="4" align="right" width="90px">
                                                                             <?php echo number_format($rec['MONEY_BDG'], 2); ?>
                                                                         </td>
@@ -1374,7 +1271,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                         ?>
                                                                     </tr>
                                                                     <tr bgcolor="#FFFFFF" class="table-body2-rmoney">
-                                                                        <td align="center" style="background:#afeeee" ref="งบดำเนินงาน">แผน</td>
+                                                                        <td align="center" style="background:#afeeee">แผน</td>
                                                                         <?php
                                                                         foreach ($rr as $key => $val) {
                                                                             if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
@@ -1397,54 +1294,6 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                         } //foreach
                                                                         ?>
                                                                     </tr>
-                                                                    <!--tr bgcolor="#FFFFFF" class="table-body2-rmoney">
-													<td align="center" style="background:#afeeee">งบลงทุน</td>
-													<?php
-                                                                    foreach ($rr as $key => $val) {
-                                                                        if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                            $m_d = substr($val, 4, 2) * 1;
-                                                                            $y_d = substr($val, 0, 4);
-                                                                            //if($val<=$year_me){
-                                                    ?>
-													<td align="right" style="background:#afeeee">
-													<?php if ($m[$key] == '') {
-                                                                                echo "";
-                                                                            } else {
-                                                    ?>
-													<?php echo @number_format($arr_pr_invest[$rec['PRJP_ID']][$y_d][$m_d], 2);
-                                                                            } ?></td>
-													<?php     //}else{ 
-                                                    ?>
-													  <?php /*?><td align="center">-</td>	<?php */ ?>
-													<?php
-                                                                        } //if 
-                                                                    } //foreach
-                                                    ?>
-												</tr>
-												<tr bgcolor="#FFFFFF" class="table-body2-rmoney">
-													<td align="center" style="background:#afeeee">งบบุคลากร</td>
-													<?php
-                                                                    foreach ($rr as $key => $val) {
-                                                                        if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                            $m_d = substr($val, 4, 2) * 1;
-                                                                            $y_d = substr($val, 0, 4);
-                                                                            //if($val<=$year_me){
-                                                    ?>
-													<td align="right" style="background:#afeeee">
-													<?php if ($m[$key] == '') {
-                                                                                echo "";
-                                                                            } else {
-                                                    ?>
-													<?php echo @number_format($arr_pr_person[$rec['PRJP_ID']][$y_d][$m_d], 2);
-                                                                            } ?></td>
-													<?php     //}else{ 
-                                                    ?>
-													  <?php /*?><td align="center">-</td>	<?php */ ?>
-													<?php
-                                                                        } //if 
-                                                                    } //foreach
-                                                    ?>
-												</tr-->
 
                                                                     <!--<tr bgcolor="#FFFFFF">
 												  <td align="center" style="background:#FFFFFF">งบตั้งเบิก สงป.301</td>
@@ -1542,7 +1391,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                         ?>
                                                                     </tr>
                                                                     <tr bgcolor="#FFFFFF" class="table-body4-rmoney">
-                                                                        <td align="center" style="background:#afeeee" ref="งบดำเนินงาน">ผล</td>
+                                                                        <td align="center" style="background:#afeeee">ผล</td>
                                                                         <?php
                                                                         $k = 1;
                                                                         foreach ($rr as $key => $val) {
@@ -1603,170 +1452,25 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                                         } else {
                                                                                         }
                                                                                         ?>
-                                                                                        <input disabled prjp-parent-id="<?php echo $rec["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $rec['PRJP_ID']; ?>" month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" name="BDG_VALUE[<?php echo $rec['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_VALUE_<?php echo $rec['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" size="5" class="form-control PV_<?php echo $ii; ?>_<?php echo $k; ?>" value="<?php echo number_format($arr_rr[$rec['PRJP_ID']][$y_d][$m_d], 2); ?>" onBlur="Chk_sval('<?php echo $c_arr; ?>',<?php echo $rec['PRJP_ID']; ?>, this);
-																Sum_result('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>');
-                                                                status_result('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>');
-																Sum_result_v('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>', this);
-																NumberFormat(this,2);" style="text-align:right;<?php echo $bgdis; ?>" <?php echo $distxt; ?>><?php } ?>
+                                                                                        <input <?php echo $readonly; ?> prjp-parent-id="<?php echo $rec["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $rec['PRJP_ID']; ?>" month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" name="BDG_VALUE[<?php echo $rec['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_VALUE_<?php echo $rec['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" size="5" class="form-control PV_<?php echo $ii; ?>_<?php echo $k; ?>" value="<?php echo number_format($arr_rr[$rec['PRJP_ID']][$y_d][$m_d], 2); ?>" onBlur="Chk_sval('<?php echo $c_arr; ?>',<?php echo $rec['PRJP_ID']; ?>, this);
+												   Sum_result('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>');
+												   Sum_result_v('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>', this);
+												   NumberFormat(this,2);" style="text-align:right;<?php echo $bgdis; ?>" <?php echo $distxt; ?>><?php } ?>
                                                                                 </td>
-                                                                        <?php
-                                                                            } //if
+                                                                        <?php } //if
                                                                             $k++;
                                                                         } //foreach 
                                                                         ?>
                                                                     </tr>
-                                                                    <!--tr bgcolor="#FFFFFF" class="table-body4-rmoney">
-													<td align="center" style="background:#afeeee">งบลงทุน</td>
-													<?php
-                                                                    $k = 1;
-                                                                    foreach ($rr as $key => $val) {
-                                                                        if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                            $m_d = substr($val, 4, 2) * 1;
-                                                                            $y_d = substr($val, 0, 4);
-                                                                            //if($val<=$year_me){
-                                                                            $mck = $y_d . sprintf("%'02d", $m_d);
-                                                                            if ($mck >= $ymchk) {
-                                                                                $distxt = "disabled";
-                                                                                $bgdis = "background:#9F9;";
-                                                                            } else {
-                                                                                $distxt = "";
-                                                                                $bgdis = "";
-                                                                            }
-                                                                            if ($_SESSION["sys_group_id"] != '5') {
-                                                                                if ($rec_head['PRJP_SET_TIME_CHK'] == 1) {
-                                                                                    $input = ($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) . date("d");
-                                                                                    if ($input >= $chk_set_start && $input <= $chk_set_end) {
-                                                                                        $distxt = 'comparewith="' . ($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) . ':' . $chk_set . '"';
-                                                                                        $bgdis = "";
-                                                                                    } else {
-                                                                                        $distxt = "readonly";
-                                                                                        $bgdis = "background:#9F9;";
-                                                                                    }
-                                                                                } else {
-                                                                                    if (($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) == ($ymchk)) {
-                                                                                        if (in_array(date('d'), $ARR_CHK_REPORT_MONTH_DATE[date('m')])) {
-                                                                                            $distxt = "DDDD";
-                                                                                            $bgdis = "";
-                                                                                        } else {
-                                                                                            $distxt = "readonly";
-                                                                                            $bgdis = "background:#9F9;";
-                                                                                        }
-                                                                                    } else {
-                                                                                        $distxt = "readonly";
-                                                                                        $bgdis = "background:#9F9;";
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                    ?>
-															<td align="right" style="background:#afeeee">
-																<?php if ($m[$key] == '') {
-                                                                                echo "";
-                                                                            } else {
-                                                                                $input_type = "text";
-                                                                                $readonly = "";
-                                                                                if ($totalChild > 0) {
-                                                                                    $readonly = "readonly";
-                                                                                    $input_type = "hidden";
-                                                                                } else {
-                                                                                }
-                                                                ?>
-																<input  <?php echo $readonly; ?>   prjp-parent-id="<?php echo $rec["PRJP_PARENT_ID"]; ?>"  
-																prjp-id="<?php echo $rec['PRJP_ID']; ?>"  month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" 
-																name="BDG_INVEST_VALUE[<?php echo $rec['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_INVEST_VALUE_<?php echo $rec['PRJP_ID']; ?>_<?php echo $k; ?>" 
-																type="text" size="5" class="form-control PV_<?php echo $ii; ?>_<?php echo $k; ?>" 
-																value="<?php echo number_format($arr_rr_invest[$rec['PRJP_ID']][$y_d][$m_d], 2); ?>" 
-																onBlur="Chk_sval_invest('<?php echo $c_arr; ?>',<?php echo $rec['PRJP_ID']; ?>, this);
-																Sum_result_invest('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>');
-																Sum_result_v_invest('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>', this);
-																NumberFormat(this,2);" style="text-align:right;<?php echo $bgdis; ?>" <?php echo $distxt; ?>><?php } ?>
-															</td>
-															<?php
-                                                                        } //if
-                                                                        $k++;
-                                                                    } //foreach 
-                                                            ?>
-												</tr>
-												<tr bgcolor="#FFFFFF" class="table-body4-rmoney">
-													<td align="center" style="background:#afeeee">งบบุคลากร</td>
-													<?php
-                                                                    $k = 1;
-                                                                    foreach ($rr as $key => $val) {
-                                                                        if ($key >= $mstart && $key <= ($mend * $row) + $rowtb) {
-                                                                            $m_d = substr($val, 4, 2) * 1;
-                                                                            $y_d = substr($val, 0, 4);
-                                                                            //if($val<=$year_me){
-                                                                            $mck = $y_d . sprintf("%'02d", $m_d);
-                                                                            if ($mck >= $ymchk) {
-                                                                                $distxt = "disabled";
-                                                                                $bgdis = "background:#9F9;";
-                                                                            } else {
-                                                                                $distxt = "";
-                                                                                $bgdis = "";
-                                                                            }
-                                                                            if ($_SESSION["sys_group_id"] != '5') {
-                                                                                if ($rec_head['PRJP_SET_TIME_CHK'] == 1) {
-                                                                                    $input = ($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) . date("d");
-                                                                                    if ($input >= $chk_set_start && $input <= $chk_set_end) {
-                                                                                        $distxt = 'comparewith="' . ($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) . ':' . $chk_set . '"';
-                                                                                        $bgdis = "";
-                                                                                    } else {
-                                                                                        $distxt = "readonly";
-                                                                                        $bgdis = "background:#9F9;";
-                                                                                    }
-                                                                                } else {
-                                                                                    if (($m_d == 12 ? ($y_d + 1) . '01' : $mck + 1) == ($ymchk)) {
-                                                                                        if (in_array(date('d'), $ARR_CHK_REPORT_MONTH_DATE[date('m')])) {
-                                                                                            $distxt = "DDDD";
-                                                                                            $bgdis = "";
-                                                                                        } else {
-                                                                                            $distxt = "readonly";
-                                                                                            $bgdis = "background:#9F9;";
-                                                                                        }
-                                                                                    } else {
-                                                                                        $distxt = "readonly";
-                                                                                        $bgdis = "background:#9F9;";
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                    ?>
-															<td align="right" style="background:#afeeee">
-																<?php if ($m[$key] == '') {
-                                                                                echo "";
-                                                                            } else {
-                                                                                $input_type = "text";
-                                                                                $readonly = "";
-                                                                                if ($totalChild > 0) {
-                                                                                    $readonly = "readonly";
-                                                                                    $input_type = "hidden";
-                                                                                } else {
-                                                                                }
-                                                                ?>
-																<input  <?php echo $readonly; ?>   prjp-parent-id="<?php echo $rec["PRJP_PARENT_ID"]; ?>"  
-																prjp-id="<?php echo $rec['PRJP_ID']; ?>"  month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" 
-																name="BDG_PERSON_VALUE[<?php echo $rec['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_PERSON_VALUE_<?php echo $rec['PRJP_ID']; ?>_<?php echo $k; ?>" 
-																type="text" size="5" class="form-control PV_<?php echo $ii; ?>_<?php echo $k; ?>" 
-																value="<?php echo number_format($arr_rr_person[$rec['PRJP_ID']][$y_d][$m_d], 2); ?>" 
-																onBlur="Chk_sval_person('<?php echo $c_arr; ?>',<?php echo $rec['PRJP_ID']; ?>, this);
-																Sum_result_person('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>');
-																Sum_result_v_person('<?php echo $c_arr; ?>','<?php echo $num_rows; ?>','<?php echo $ymchk_js; ?>', this);
-																NumberFormat(this,2);" style="text-align:right;<?php echo $bgdis; ?>" <?php echo $distxt; ?>><?php } ?>
-															</td>
-															<?php
-                                                                        } //if
-                                                                        $k++;
-                                                                    } //foreach 
-                                                            ?>
-												</tr-->
                                                                     <script>
                                                                         Chk_sval('<?php echo $c_arr; ?>', <?php echo $rec['PRJP_ID']; ?>, this);
                                                                         Sum_result('<?php echo $c_arr; ?>', '<?php echo $num_rows; ?>', '<?php echo $ymchk_js; ?>');
-                                                                        status_result('<?php echo $c_arr; ?>', '<?php echo $num_rows; ?>', '<?php echo $ymchk_js; ?>');
                                                                         Sum_result_v('<?php echo $c_arr; ?>', '<?php echo $num_rows; ?>', '<?php echo $ymchk_js; ?>');
                                                                     </script>
                                                                     <?php
 
                                                                     $sqlChild = "SELECT 	a.PRJP_PARENT_ID,a.PRJP_ID,a.PRJP_CODE,a.PRJP_NAME,a.UNIT_ID,a.WEIGHT,a.TRAGET_VALUE,a.SDATE_PRJP,a.EDATE_PRJP,a.MONEY_BDG,a.ORDER_NO,
-												(select sum(BDG_VALUE) from prjp_report_money where prjp_report_money.PRJP_ID = a.PRJP_ID)as s_val
+												(select sum(BDG_VALUE) from prjp_report_money_temp where prjp_report_money_temp.PRJP_ID = a.PRJP_ID)as s_val
 												FROM prjp_project a 
 												WHERE 1=1 AND a.PRJP_LEVEL = '3' AND a.PRJP_PARENT_ID = '" . $rec['PRJP_ID'] . "' 
 												order by ORDER_ROW_1,ORDER_ROW_2,ORDER_ROW_3,ORDER_NO
@@ -1916,7 +1620,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                                                         ?>
                                                                                             <input type="hidden" id="VCHK_YEAR_<?php echo $ii; ?>_<?php echo $k; ?>" name="VCHK_YEAR[]" value="<?php echo $mck; ?>">
                                                                                             <input name="YEAR[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="YEAR_<?php echo $key; ?>" type="hidden" size="5" class="form-control number_format" value="<?php echo ($y_d); ?>">
-                                                                                            <input prjp-parent-id="<?php echo $recChild["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $recChild['PRJP_ID']; ?>" month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" name="BDG_VALUE[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_VALUE_<?php echo $recChild['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" disabled size="5" class="form-control " value="<?php echo number_format($arr_rr[$recChild['PRJP_ID']][$y_d][$m_d], 2); ?>" onBlur="Chk_sval('<?php echo $c_arr; ?>',<?php echo $recChild['PRJP_ID']; ?>, this); 
+                                                                                            <input prjp-parent-id="<?php echo $recChild["PRJP_PARENT_ID"]; ?>" prjp-id="<?php echo $recChild['PRJP_ID']; ?>" month="<?php echo $m_d; ?>" year="<?php echo $y_d; ?>" name="BDG_VALUE[<?php echo $recChild['PRJP_ID']; ?>][<?php echo $y_d; ?>][<?php echo $m_d; ?>]" id="BDG_VALUE_<?php echo $recChild['PRJP_ID']; ?>_<?php echo $k; ?>" type="text" size="5" class="form-control " value="<?php echo number_format($arr_rr[$recChild['PRJP_ID']][$y_d][$m_d], 2); ?>" onBlur="Chk_sval('<?php echo $c_arr; ?>',<?php echo $recChild['PRJP_ID']; ?>, this); 
 																	cal_child(this); NumberFormat(this,2);" style="text-align:right;<?php echo $bgdis; ?>" <?php echo $distxt; ?>><?php
                                                                                                                                                                                 } ?>
                                                                                     </td>
@@ -1983,7 +1687,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                 <?php echo $mck . date("d"); ?><br />
                                                 <?php echo $de_set; ?><br />
                                             </div>
-                                            <table width="" class="" cellpadding="2" border="0" style="max-width:auto">
+                                            <table id="frm-search" width="" class="" cellpadding="2" border="0" style="max-width:auto">
                                                 <input type="hidden" name="month_now" id="month_now" value="<?php echo (date("m") * 1); ?>">
                                                 <input type="hidden" name="year_now" id="year_now" value="<?php echo (date("Y") + 543); ?>">
                                                 <tr>
@@ -1991,7 +1695,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
 
                                                     <td align="left" colspan="3" width="200px"> </td>
                                                     <td align="left" width="300"> งบประมาณโครงการ </td>
-                                                    <td align="left" width="200"><input name="BDG_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="BDG_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" disabled type="text" size="5" class="form-control" value="<?php echo number_format($rec_head['MONEY_BDG'], 2); ?>" ; Sum_result('12','8','256109'); Sum_result_v('12','8','256109'); NumberFormat(this,2);" style="text-align:right; width: 150px" readonly></td>
+                                                    <td align="left" width="200"><input name="BDG_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="BDG_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" type="text" size="5" class="form-control" value="<?php echo number_format($rec_head['MONEY_BDG'], 2); ?>" ; Sum_result('12','8','256109'); Sum_result_v('12','8','256109'); NumberFormat(this,2);" style="text-align:right; width: 150px" readonly></td>
                                                     <td align="center" width="70"></td>
                                                     <td align="left"></td>
                                                 </tr>
@@ -2000,7 +1704,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                     <?php $month =  date('m'); ?>
                                                     <td align="left" colspan="3" width="200px"> </td>
                                                     <td align="left" width=""> ผลการเบิกจ่าย ณ เดือน <?php echo $month_full[$MONTH2 * 1]; ?> </td>
-                                                    <td align="left" width="200"><input name="DISBURSE_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="DISBURSE_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" disabled type="text" size="5" class="form-control" value="<?php echo number_format($rec_r_value_now['sumnow'], 2); ?>" ; Sum_result('12','8','256109'); Sum_result_v('12','8','256109'); NumberFormat(this,2);" style="text-align:right; width: 150px" readonly></td>
+                                                    <td align="left" width="200"><input name="DISBURSE_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="DISBURSE_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" type="text" size="5" class="form-control" value="<?php echo number_format($rec_r_value_now['sumnow'], 2); ?>" ; Sum_result('12','8','256109'); Sum_result_v('12','8','256109'); NumberFormat(this,2);" style="text-align:right; width: 150px" readonly></td>
                                                     <td align="right" width="" id="PERCENT_DISBURSE_VALUE"><?php echo @number_format(($rec_r_value_now['sumnow'] / $rec_head['MONEY_BDG']) * 100, 2); ?></td>
                                                     <td align="left">%</td>
                                                 </tr>
@@ -2013,7 +1717,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                                             <a class="btn btn-info data-info-hover" onclick="dataBINDING('<?php echo $PRJP_ID; ?>');" data-toggle="modal" data-placement="top" data-title="" data-content="คลิกเพื่อดูข้อมูลการกรอกงบประมาณผูกพัน"><i class="fa fa-info" aria-hidden="true"></i></a>
                                                         <?php } ?>
                                                     </td>
-                                                    <td align="left" width="200"><input name="BINDING_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="BINDING_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" type="text" size="5" class="form-control number_format chk_empty" value="<?php echo empty($rec_binding['PRJP_NOW_ID']) ? '' : number_format($rec_binding['BINDING_VALUE'], 2); ?>" Onblur="sum_value(year_now.value,month_now.value);NumberFormat(this,2);" style="text-align:right; width: 150px;<?php echo $bgdis; ?>" disabled>
+                                                    <td align="left" width="200"><input name="BINDING_VALUE[<?php echo (date("Y") + 543); ?>][<?php echo (date("m") * 1); ?>]" id="BINDING_VALUE_<?php echo (date("Y") + 543); ?>_<?php echo (date("m") * 1); ?>" type="text" size="5" class="form-control number_format chk_empty" value="<?php echo empty($rec_binding['PRJP_NOW_ID']) ? '' : number_format($rec_binding['BINDING_VALUE'], 2); ?>" Onblur="sum_value(year_now.value,month_now.value);NumberFormat(this,2);" style="text-align:right; width: 150px;<?php echo $bgdis; ?>" <?php echo $distxt; ?>>
                                                     </td>
                                                     <td align="right" width="" id="PERCENT_BINDING_VALUE"><?php echo @number_format(($rec_binding['BINDING_VALUE'] / $rec_head['MONEY_BDG']) * 100, 2); ?></td>
                                                     <td align="left">%</td>
@@ -2051,7 +1755,11 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                                 </div>
                             </div>
                         </div>
-                        
+                        <div class="clearfix" align="center">
+                            <?php if ($_SESSION['sys_status_edit'] == '1' && ($_SESSION["sys_group_id"] == '5' || $distxt != 'readonly')) { ?>
+                                <!-- <div class="row"><button type="button" class="btn btn-primary" onClick="chkinput();">บันทึก</button></div> -->
+                            <?php } ?>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -2070,7 +1778,7 @@ if ($rec_head['PRJP_CON_ID'] != '') {
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close" aria-hidden="true"></i> ยกเลิก</button> -->
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close" aria-hidden="true"></i> ยกเลิก</button>
                 </div>
             </div>
         </div>
@@ -2083,6 +1791,13 @@ if ($rec_head['PRJP_CON_ID'] != '') {
             $('#modal_contract_binding .modal-body').load("disp_project_send_act_money_binding.php?menu_id=" + menu_id + "&menu_sub_id=" + menu_sub_id + "&PRJP_ID=" + PRJP_ID)
             $('#modal_contract_binding').modal('show');
             $('.data-info').html('');
+        }
+        toggle_money('<?php echo $rec['BDG_TYPE_ID']; ?>');
+    </script>
+    <script>
+        var fields = document.getElementById("frm-search").getElementsByTagName('*');
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].disabled = true;
         }
     </script>
 </body>

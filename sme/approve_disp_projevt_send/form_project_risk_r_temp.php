@@ -25,7 +25,7 @@ while ($rec = $db->db_fetch_array($query)) {
     $arr_risk[$rec['RISK_ID']] = text($rec['RISK_NAME']);
 }
 
-$sql_main = "SELECT * FROM prjp_risk_detail WHERE PRJP_ID = '" . $PRJP_ID . "' ";
+$sql_main = "SELECT * FROM prjp_risk_detail_temp WHERE PRJP_ID = '" . $PRJP_ID . "' ";
 $query_main = $db->query($sql_main);
 $row_main = $db->db_num_rows($query_main);
 ?>
@@ -135,7 +135,7 @@ $row_main = $db->db_num_rows($query_main);
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
                 <li class="active">รายละเอียดปัญหาอุปสรรคจากการดำเนินงาน/โครงการ (อ้างอิง สสว.300)</li>
             </ol>
         </div>
@@ -153,7 +153,7 @@ $row_main = $db->db_num_rows($query_main);
                     <!-- Modal -->
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
                         <?php
                         if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
                         ?>

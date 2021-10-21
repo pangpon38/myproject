@@ -215,7 +215,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
         <div class="col-xs-12 col-sm-12">
             <ol class="breadcrumb">
                 <li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-                <li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
+                <li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">อนุมัติการรายงานผล</a></li>
                 <li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
             </ol>
         </div>
@@ -233,7 +233,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                     <!-- Modal -->
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+                        <div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
                         <?php
                         if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
                         ?>
@@ -322,8 +322,8 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                 <?php
                                                 $sql_status_sub_detail_1 = "SELECT a.*,
                                                 b.PRJP_STATUS_SUB_DESC as 'DESC'
-                                                FROM prjp_status_sub_detail a
-                                                LEFT JOIN prjp_status_sub_desc b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
+                                                FROM prjp_status_sub_detail_temp a
+                                                LEFT JOIN prjp_status_sub_desc_temp b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
                                                 AND a.PRJP_STATUS_DETAIL_ID = b.PRJP_STATUS_DETAIL_ID WHERE a.PRJP_STATUS_DETAIL_ID = '" . $rec_d1['PRJP_STATUS_DETAIL_ID'] . "' AND a.PRJP_STATUS_DETAIL_TYPE = 1";
                                                 $query_status_sub_detail_1 = $db->query($sql_status_sub_detail_1);
                                                 // echo $sql_status_sub_detail_1;
@@ -370,7 +370,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                 <td><?php echo text($rec_d1['PRJP_NOTE']); ?></td>
                                                 </td>
                                                 <td nowrap>
-                                                      ---
+                                                    ---
                                                 </td>
                                             </tr>
                                             <tr>
@@ -378,8 +378,8 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                 <?php
                                                 $sql_status_res_detail_1 = "SELECT a.*,
                                                   b.PRJP_STATUS_SUB_DESC as 'DESC'
-                                                  FROM prjp_status_sub_detail a
-                                                  LEFT JOIN prjp_status_sub_desc b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
+                                                  FROM prjp_status_sub_detail_temp a
+                                                  LEFT JOIN prjp_status_sub_desc_temp b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
                                                   AND a.PRJP_STATUS_DETAIL_ID = b.PRJP_STATUS_DETAIL_ID WHERE a.PRJP_STATUS_DETAIL_ID = '" . $rec_d1['PRJP_STATUS_DETAIL_ID'] . "' AND a.PRJP_STATUS_DETAIL_TYPE = 2";
                                                 $query_status_res_detail_1 = $db->query($sql_status_res_detail_1);
                                                 while ($rec_sub_1 = $db->db_fetch_array($query_status_res_detail_1)) {
@@ -421,7 +421,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                 <td><?php echo $rec_d1['PRJP_STATUS_DETAIL_DATE_RESULT']; ?></td>
                                                 <td><?php echo text($rec_d1['PRJP_NOTE_RESULT']); ?></td>
                                                 <td nowrap>
-													---
+                                                    ---
                                                     <!-- <a class="btn btn-success" data-toggle="modal" onclick="editResult(<?php echo $rec_d1['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-edit" aria-hidden="true"></i> นำเข้าผล</a> -->
                                                     <!-- <a class="btn btn-danger" onclick="delData(<?php echo $rec_d1['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-trash" aria-hidden="true"></i> ลบ</a> -->
                                                 </td>
@@ -507,8 +507,8 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                         <?php
                                                         $sql_status_sub_detail_2 = "SELECT a.*,
                                                         b.PRJP_STATUS_SUB_DESC as 'DESC'
-                                                        FROM prjp_status_sub_detail a
-                                                        LEFT JOIN prjp_status_sub_desc b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
+                                                        FROM prjp_status_sub_detail_temp a
+                                                        LEFT JOIN prjp_status_sub_desc_temp b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
                                                         AND a.PRJP_STATUS_DETAIL_ID = b.PRJP_STATUS_DETAIL_ID WHERE a.PRJP_STATUS_DETAIL_ID = '" . $rec_d2['PRJP_STATUS_DETAIL_ID'] . "' AND a.PRJP_STATUS_DETAIL_TYPE = 1";
                                                         $query_status_sub_detail_2 = $db->query($sql_status_sub_detail_2);
                                                         while ($rec_sub_2 = $db->db_fetch_array($query_status_sub_detail_2)) {
@@ -537,7 +537,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                         <td><?php echo $rec_d2['PRJP_STATUS_DETAIL_DATE_CONTRA']; ?></td>
                                                         <td><?php echo text($rec_d2['PRJP_NOTE']); ?></td>
                                                         <td nowrap>
-															---
+                                                            ---
                                                             <!-- <a class="btn btn-warning" data-toggle="modal" onclick="editData2(<?php echo $rec_d2['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-edit" aria-hidden="true"></i> แก้ไข</a>
                                                             <a class="btn btn-danger" onclick="delData2(<?php echo $rec_d2['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-trash" aria-hidden="true"></i> ลบ</a> -->
                                                         </td>
@@ -547,8 +547,8 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                         <?php
                                                         $sql_status_res_detail_2 = "SELECT a.*,
                                                          b.PRJP_STATUS_SUB_DESC as 'DESC'
-                                                         FROM prjp_status_sub_detail a
-                                                         LEFT JOIN prjp_status_sub_desc b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
+                                                         FROM prjp_status_sub_detail_temp a
+                                                         LEFT JOIN prjp_status_sub_desc_temp b on a.PRJP_STATUS_SUB_ID = b.PRJP_STATUS_SUB_ID AND a.PRJP_STATUS_DETAIL_TYPE = b.PRJP_STATUS_DETAIL_TYPE
                                                          AND a.PRJP_STATUS_DETAIL_ID = b.PRJP_STATUS_DETAIL_ID WHERE a.PRJP_STATUS_DETAIL_ID = '" . $rec_d2['PRJP_STATUS_DETAIL_ID'] . "' AND a.PRJP_STATUS_DETAIL_TYPE = 2";
                                                         $query_status_res_detail_2 = $db->query($sql_status_res_detail_2);
                                                         while ($rec_sub_2 = $db->db_fetch_array($query_status_res_detail_2)) {
@@ -562,7 +562,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                                             </tr>
                                                                             <tr style="border:none;">
                                                                                 <td style="border:none;">
-                                                                                <?php echo $rec_sub_2['PRJP_STATUS_SUB_DATE']; ?>
+                                                                                    <?php echo $rec_sub_2['PRJP_STATUS_SUB_DATE']; ?>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -593,7 +593,7 @@ $row_sd_2 = $db->db_num_rows($query_status_detail_2);
                                                         <td><?php echo $rec_d2['PRJP_STATUS_DETAIL_DATE_RESULT']; ?></td>
                                                         <td><?php echo text($rec_d2['PRJP_NOTE_RESULT']); ?></td>
                                                         <td nowrap>
-															---
+                                                            ---
                                                             <!-- <a class="btn btn-success" data-toggle="modal" onclick="editResult2(<?php echo $rec_d2['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-edit" aria-hidden="true"></i> นำเข้าผล</a> -->
                                                             <!-- <a class="btn btn-danger" onclick="delData2(<?php echo $rec_d2['PRJP_STATUS_DETAIL_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-trash" aria-hidden="true"></i> ลบ</a> -->
                                                         </td>

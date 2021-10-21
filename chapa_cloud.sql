@@ -34,3 +34,19 @@ WHERE
 	)
 ORDER BY
 	CHAPA_CLOUD_ID
+
+
+	SELECT
+	name
+FROM
+	master.sys.databases
+WHERE
+	name NOT IN (
+		'master',
+		'tempdb',
+		'model',
+		'msdb',
+		'baac_cloud_63',
+		'baac_chapa_dev',
+		'baac_chapa_000_20210617'
+	);

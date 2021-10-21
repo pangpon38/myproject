@@ -38,6 +38,7 @@ function url2param($paramLink)
     return str_replace([$key, $key2], ['+', '/'], base64_encode($paramLink));
 }
 
+
 // $a = encrypt_decrypt("encrypt","depname=&province=71&amphur=20");
 // echo $a;
 $b = encrypt_decrypt("decrypt","U0pKUXdHSjBjTFova201NW16TEVpeTVWcnByZ2dXTkdEYmdFbkt0ZUlRUT0=");

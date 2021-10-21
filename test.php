@@ -266,4 +266,5 @@ foreach ($raw_data->reportpayment as $res) {
     $arr_data_date_recipt[$i] = $res->date_receipt;
     echo $arr_data_date_recipt[$i] . "<br>";
     $i++;
+
 } ?>

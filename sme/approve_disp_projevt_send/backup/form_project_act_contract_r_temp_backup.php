@@ -21,7 +21,7 @@ if ($_POST['PRJP_ID'] != '') {
 } else {
 	$PRJP_ID = $PRJP_ID;
 }
-$sql_head = "SELECT PRJP_ID,PRJP_CODE,PRJP_NAME,PRJP_CON_ID FROM prjp_project WHERE PRJP_ID = '" . $PRJP_ID . "'";
+$sql_head = "SELECT PRJP_ID,PRJP_CODE,PRJP_NAME,PRJP_CON_ID FROM prjp_project_temp WHERE PRJP_ID = '" . $PRJP_ID . "'";
 $query_head = $db->query($sql_head);
 $rec_head = $db->db_fetch_array($query_head);
 
@@ -29,28 +29,9 @@ $filter == "";
 if ($_POST['s_round_year_bud'] != "") {
 	$filter .= " AND PRJP_NAME LIKE '%" . $_POST['s_round_year_bud'] . "%' ";
 }
-$sql = "SELECT a.*, b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID, b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID, c.CO_ORG_TYPE_NAME, d.CO_ORG_SECTOR_NAME from prjp_act_contract a 
-LEFT JOIN prjp_act_contract_co_org b on a.PRJP_ACT_CONTRACT_ID = b.PRJP_ACT_CONTRACT_ID
-LEFT JOIN setup_co_org_type c on b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID = c.CO_ORG_TYPE_ID
-LEFT JOIN setup_co_org_sector d on b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID = d.CO_ORG_SECTOR_ID
-WHERE PRJP_ID = '" . $PRJP_ID . "'";
+$sql = "SELECT * from prjp_act_contract_temp  WHERE PRJP_ID = '" . $PRJP_ID . "'";
 $query = $db->query($sql);
 $num_rows = $db->db_num_rows($query);
-
-
-
-// $sql_co_org = "SELECT a.CO_ORG_TYPE_ID, a.CO_ORG_TYPE_NAME, b.PRJP_ACT_CONTRACT_ID FROM setup_co_org_type a 
-// LEFT JOIN prjp_act_contract_co_org b on a.CO_ORG_TYPE_ID = b.PRJP_ACT_CONTRACT_CO_ORG_PARENT_ID
-// WHERE ACTIVE_STATUS = 1 AND PRJP_ACT_CONTRACT_ID = $idc";
-// $query_co_org = $db->query($sql_co_org);
-// $rec_co_org = $db->db_fetch_array($query_co_org);
-// echo $rec_co_org['CO_ORG_TYPE_ID'];
-
-// $sql_co_sector = "SELECT a.CO_ORG_SECTOR_ID FROM setup_co_org_sector a
-// LEFT JOIN prjp_act_contract_co_org b on a.CO_ORG_SECTOR_ID = b.PRJP_ACT_CONTRACT_CO_ORG_SECTOR_ID
-// WHERE ACTIVE_STATUS = 1 AND PRJP_ACT_CONTRACT_ID = $idc ";
-// $query_co_sector = $db->query($sql_co_sector);
-// $rec_co_sector = $db->db_fetch_array($query_co_sector);
 
 ?>
 <!DOCTYPE html>
@@ -75,29 +56,16 @@ $num_rows = $db->db_num_rows($query);
 			$('#modal_contract').modal('show');
 		}
 
+		function readData(idc, idp) {
+			$('#proc2').val("edit_lesson");
+			$('#modal_contract .modal-body').load("form_project_act_contract_detail_r.php?menu_id=" + menu_id + "&menu_sub_id=" + menu_sub_id + "&idc=" + idc)
+			$('#modal_contract').modal('show');
+		}
+
 		function remove_id(id, tb_id) {
 			$('#' + id).remove();
 			sum_bdg();
 			run_number_tb(tb_id);
-		}
-
-		function get_org_sector(e) {
-			if (e > 0 && $.trim(e) != "") {
-				$.ajax({
-					url: "process/disp_project_act_process.php",
-					type: "POST",
-					data: {
-						proc: "get_org_sector",
-						CO_ORG_PARENT_ID: e
-					},
-					success: function(data) {
-						$("#CO_ORG_SECTOR").html(data);
-						$('select').trigger('liszt:updated');
-					}
-				});
-			} else {
-				$("#CO_ORG_SECTOR").html('<option value=""></option>');
-			}
 		}
 
 		function add_row_lesson() {
@@ -225,7 +193,7 @@ $num_rows = $db->db_num_rows($query);
 		<!--<div class="col-xs-12 col-sm-12">
 		<ol class="breadcrumb">
 			<li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-			<li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>"><?php echo Showmenu($menu_sub_id); ?></a></li>
+			<li><a href="disp_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>"><?php echo Showmenu($menu_sub_id); ?></a></li>
 			<li><a href="disp_project_act.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id . "&PRJP_ID=" . $PRJP_ID . "&MONEY_PMAIN=" . $MONEY_PMAIN); ?>">กิจกรรม</a></li>
 			<li class="active">สัญญาจ้าง</li>
 		</ol>
@@ -233,8 +201,8 @@ $num_rows = $db->db_num_rows($query);
 		<div class="col-xs-12 col-sm-12">
 			<ol class="breadcrumb">
 				<li><a href="index.php?<?php echo $paramlink; ?>">หน้าแรก</a></li>
-				<li><a href="disp_send_project.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>">นำเข้าผลโครงการ</a></li>
-				<li class="active">รายละเอียดผลตัวชี้วัดของผลผลิต</li>
+				<li><a href="disp_approve_project_temp.php?<?php echo url2code("menu_id=" . $menu_id . "&menu_sub_id=" . $menu_sub_id); ?>"><?php echo Showmenu($menu_sub_id); ?></a></li>
+				<li class="active">ผลตัวชี้วัดของผลผลิต</li>
 			</ol>
 		</div>
 		<div class="col-xs-12 col-sm-12">
@@ -250,7 +218,7 @@ $num_rows = $db->db_num_rows($query);
 					<!-- Modal -->
 
 					<div class="row">
-						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r.php"); ?></div>
+						<div class="col-xs-12 col-sm-12"><?php include("tab_menu2_r_temp.php"); ?></div>
 						<?php
 						if ($_SESSION["sys_group_id"] == '5' || $_SESSION["sys_group_id"] == '9') {
 						?>
@@ -266,6 +234,13 @@ $num_rows = $db->db_num_rows($query);
 						</tr>
 					</table>
 					<br />
+					<div class="row">
+						<div class="col-xs-12 col-sm-1">
+							<?php if ($_SESSION['sys_status_add'] == '1') { ?>
+								<!-- <a class="btn btn-success" data-toggle="modal" onclick="addData();"; ><i class="fa fa-plus-circle" aria-hidden="true" ></i> เพิ่มสัญญาจ้าง</a> -->
+							<?php } ?>
+						</div>
+					</div>
 					<div class="col-xs-12 col-sm-12">
 						<div class="">
 							<table width="22%" class="table table-bordered table-striped table-hover table-condensed">
@@ -289,9 +264,6 @@ $num_rows = $db->db_num_rows($query);
 										<th rowspan="2" width="5%" nowrap>
 											<div align="center"><strong>งบประมาณ</strong></div>
 										</th>
-										<th colspan="2" width="5%" nowrap>
-											<div align="center"><strong>สำหรับสัญญาร่วมดำเนินการ ระบุชื่อหน่วยร่วม</strong></div>
-										</th>
 										<th rowspan="2" width="7%" nowrap>
 											<div align="center"><strong>จัดการ</strong></div>
 										</th>
@@ -306,12 +278,6 @@ $num_rows = $db->db_num_rows($query);
 										<th width="10%">
 											<div align="center"><strong>สัญญาร่วมดำเนินการ</strong></div>
 										</th>
-										<th width="10%">
-											<div align="center"><strong>สังกัด/ประเภท</strong></div>
-										</th>
-										<th width="10%">
-											<div align="center"><strong>หน่วยร่วม</strong></div>
-										</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -324,7 +290,6 @@ $num_rows = $db->db_num_rows($query);
 										$query = $db->query($sql);
 										$chk_type = "<i class=\"fa fa-check\" aria-hidden=\"true\"></i>";
 										while ($rec = $db->db_fetch_array($query)) {
-
 									?>
 											<tr bgcolor="#FFFFFF">
 												<td align="center"><?php echo $i; ?>.</td>
@@ -335,12 +300,13 @@ $num_rows = $db->db_num_rows($query);
 												<td align="center"><?php echo $rec['PRJP_ACT_CONTRACT_TYPE'] == '2' ? $chk_type : ''; ?></td>
 												<td align="center"><?php echo $rec['PRJP_ACT_CONTRACT_TYPE'] == '3' ? $chk_type : ''; ?></td>
 												<td align="right"><?php echo number_format($rec['PRJP_ACT_CONTRACT_BDG'], 2); ?></td>
-												<td align="right"><?php echo text($rec['CO_ORG_TYPE_NAME']); ?></td>
-												<td align="right"><?php echo text($rec['CO_ORG_SECTOR_NAME']); ?></td>
 												<td align="center" nowrap>
 													<?php if ($rec['PRJP_ACT_CONTRACT_FILE'] != "" && file_exists($path_a . $rec['PRJP_ACT_CONTRACT_FILE'])) { ?>
 														<a class="btn btn-info" href="<?php echo $path_a . $rec['PRJP_ACT_CONTRACT_FILE']; ?>" target="_blank" title="donwload_file"><?php echo $img_download; ?> ดาวน์โหลด</a>
 													<?php } ?>
+													<a class="btn btn-warning" data-toggle="modal" onclick="readData(<?php echo $rec['PRJP_ACT_CONTRACT_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-eye" aria-hidden="true"></i> ดูข้อมูล</a>
+
+													<!-- <a class="btn btn-danger" onclick="delData(<?php echo $rec['PRJP_ACT_CONTRACT_ID']; ?>,<?php echo $PRJP_ID; ?>);"><i class="fa fa-trash" aria-hidden="true"></i> ลบ</a> -->
 												</td>
 											</tr>
 										<?php
@@ -378,14 +344,14 @@ $num_rows = $db->db_num_rows($query);
 					<input name="page" type="hidden" id="page" value="<?php echo $page; ?>">
 					<input name="page_size" type="hidden" id="page_size" value="<?php echo $page_size; ?>">
 					<input type="hidden" id="PRJP_ID" name="PRJP_ID" value="<?php echo $PRJP_ID; ?>">
-					<input type="hidden" id="PRJP_ACT_CONTRACT_ID" name="PRJP_ACT_CONTRACT_ID" value="<?php echo $_POST['PRJP_ACT_CONTRACT_ID'] ?>">
+					<input type="hidden" id="PRJP_ACT_CONTRACT_ID" name="PRJP_ACT_CONTRACT_ID">
 
 					<div class="modal-body"></div>
 
 				</form>
 
 				<div class="modal-footer">
-					<button type="summit" class="btn btn-success" onclick="chkinput();"><i class="fa fa-check" aria-hidden="true"></i> บันทึก</button>
+					<!-- <button type="summit" class="btn btn-success" onclick="chkinput();"><i class="fa fa-check" aria-hidden="true"></i> บันทึก</button> -->
 					<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close" aria-hidden="true"></i> ยกเลิก</button>
 				</div>
 			</div>
