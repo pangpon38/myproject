@@ -69,9 +69,11 @@ git -C "C:\WWW\baac_chapa_062" pull > git-pull-baac_chapa_062.log 2>&1
 git -C "C:\WWW\baac_chapa_063" pull > git-pull-baac_chapa_063.log 2>&1
 git -C "C:\WWW\baac_chapa_064" pull > git-pull-baac_chapa_064.log 2>&1
 git -C "C:\WWW\baac_chapa_065" pull > git-pull-baac_chapa_065.log 2>&1
+git -C "C:\WWW\baac_chapa_066" pull > git-pull-baac_chapa_066.log 2>&1
 git -C "C:\WWW\baac_chapa_092" pull > git-pull-baac_chapa_092.log 2>&1
 git -C "C:\WWW\baac_chapa_094" pull > git-pull-baac_chapa_094.log 2>&1
 git -C "C:\WWW\baac_chapa_097" pull > git-pull-baac_chapa_097.log 2>&1
+git -C "C:\WWW\baac_chapa_098" pull > git-pull-baac_chapa_098.log 2>&1
 git -C "C:\WWW\baac_chapa_102" pull > git-pull-baac_chapa_102.log 2>&1
 git -C "C:\WWW\baac_chapa_116" pull > git-pull-baac_chapa_116.log 2>&1
 git -C "C:\WWW\baac_chapa_117" pull > git-pull-baac_chapa_117.log 2>&1
@@ -99,9 +101,13 @@ git -C "C:\WWW\baac_chapa_186" pull > git-pull-baac_chapa_186.log 2>&1
 git -C "C:\WWW\baac_chapa_198" pull > git-pull-baac_chapa_198.log 2>&1
 git -C "C:\WWW\baac_chapa_206" pull > git-pull-baac_chapa_206.log 2>&1
 git -C "C:\WWW\baac_chapa_208" pull > git-pull-baac_chapa_208.log 2>&1
+git -C "C:\WWW\baac_chapa_209" pull > git-pull-baac_chapa_209.log 2>&1
+git -C "C:\WWW\baac_chapa_214" pull > git-pull-baac_chapa_214.log 2>&1
 git -C "C:\WWW\baac_chapa_219" pull > git-pull-baac_chapa_219.log 2>&1
 git -C "C:\WWW\baac_chapa_227" pull > git-pull-baac_chapa_227.log 2>&1
+git -C "C:\WWW\baac_chapa_233" pull > git-pull-baac_chapa_233.log 2>&1
 git -C "C:\WWW\baac_chapa_234" pull > git-pull-baac_chapa_234.log 2>&1
+git -C "C:\WWW\baac_chapa_236" pull > git-pull-baac_chapa_236.log 2>&1
 git -C "C:\WWW\baac_chapa_244" pull > git-pull-baac_chapa_244.log 2>&1
 git -C "C:\WWW\baac_chapa_245" pull > git-pull-baac_chapa_245.log 2>&1
 git -C "C:\WWW\baac_chapa_246" pull > git-pull-baac_chapa_246.log 2>&1
@@ -110,8 +116,11 @@ git -C "C:\WWW\baac_chapa_253" pull > git-pull-baac_chapa_253.log 2>&1
 git -C "C:\WWW\baac_chapa_256" pull > git-pull-baac_chapa_256.log 2>&1
 git -C "C:\WWW\baac_chapa_259" pull > git-pull-baac_chapa_259.log 2>&1
 git -C "C:\WWW\baac_chapa_260" pull > git-pull-baac_chapa_260.log 2>&1
+git -C "C:\WWW\baac_chapa_262" pull > git-pull-baac_chapa_262.log 2>&1
 git -C "C:\WWW\baac_chapa_263" pull > git-pull-baac_chapa_263.log 2>&1
 git -C "C:\WWW\baac_chapa_268" pull > git-pull-baac_chapa_268.log 2>&1
+git -C "C:\WWW\baac_chapa_306" pull > git-pull-baac_chapa_306.log 2>&1
+git -C "C:\WWW\baac_chapa_311" pull > git-pull-baac_chapa_311.log 2>&1
 git -C "C:\WWW\baac_chapa_314" pull > git-pull-baac_chapa_314.log 2>&1
 git -C "C:\WWW\baac_chapa_319" pull > git-pull-baac_chapa_319.log 2>&1
 git -C "C:\WWW\baac_chapa_321" pull > git-pull-baac_chapa_321.log 2>&1
@@ -154,10 +163,18 @@ git -C "C:\WWW\baac_chapa_400" pull > git-pull-baac_chapa_400.log 2>&1
 git -C "C:\WWW\baac_chapa_401" pull > git-pull-baac_chapa_401.log 2>&1
 git -C "C:\WWW\baac_chapa_402" pull > git-pull-baac_chapa_402.log 2>&1
 git -C "C:\WWW\baac_chapa_404" pull > git-pull-baac_chapa_404.log 2>&1
+git -C "C:\WWW\baac_chapa_405" pull > git-pull-baac_chapa_405.log 2>&1
+git -C "C:\WWW\baac_chapa_406" pull > git-pull-baac_chapa_406.log 2>&1
+git -C "C:\WWW\baac_chapa_408" pull > git-pull-baac_chapa_408.log 2>&1
+git -C "C:\WWW\baac_chapa_426" pull > git-pull-baac_chapa_426.log 2>&1
+git -C "C:\WWW\baac_chapa_432" pull > git-pull-baac_chapa_432.log 2>&1
 git -C "C:\WWW\baac_chapa_434" pull > git-pull-baac_chapa_434.log 2>&1
 git -C "C:\WWW\baac_chapa_435" pull > git-pull-baac_chapa_435.log 2>&1
+git -C "C:\WWW\baac_chapa_443" pull > git-pull-baac_chapa_443.log 2>&1
+git -C "C:\WWW\baac_chapa_451" pull > git-pull-baac_chapa_451.log 2>&1
 git -C "C:\WWW\baac_chapa_460" pull > git-pull-baac_chapa_460.log 2>&1
 git -C "C:\WWW\baac_chapa_520" pull > git-pull-baac_chapa_520.log 2>&1
+git -C "C:\WWW\baac_chapa_536" pull > git-pull-baac_chapa_536.log 2>&1
 
 
 

@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <form action="" id="form" class="form" name="form">
+        <form method="post" class="form" id="form" name="form">
             <h2>แบบฟอร์ม</h2>
             <div class="form-control">
                 <label for="username">ชื่อผู้ใช้</label>

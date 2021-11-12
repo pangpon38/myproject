@@ -46,7 +46,7 @@ FROM         (SELECT     a.member_resign_id, '''' AS member_leave_id, a.member_i
                                              ''3'' AS member_status, b.prefix_name,b.id_card_no, b.fname, b.lname, a.mem_leave_status AS approve_status, 1 AS status_out, ''คัดชื่อออก'' AS status_out_name, a.type_leave_desc AS type_desc,
                                              a.leave_date AS retired_date
                        FROM         M_MEMBER_LEAVE a INNER JOIN
-                                             V_MEMBER b ON b.member_id = a.member_id
+                                             V_MEMBER b ON b.member_id = a.member_id AND b.member_status = ''3''
                        WHERE     a.mem_leave_status = ''1'' ) AS tb'
 
 
