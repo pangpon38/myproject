@@ -61,8 +61,8 @@ body {
 }
 
 .form-control.success input {
+  /* background-color: #abebc6; */
   border-color: green;
-  background-color: #abebc6;
 }
 
 .form-control small {
