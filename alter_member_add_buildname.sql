@@ -34,6 +34,7 @@ DECLARE
   WHERE
     TABLE_NAME = ''M_MEMBER'' AND COLUMN_NAME = ''building_name'')
 BEGIN
+  ALTER TABLE M_MEMBER ADD building_name VARCHAR(255)
   print ''' +@DBNAME + '''
 END' EXEC @DBExec @SQLString 
 
@@ -47,7 +48,8 @@ END' EXEC @DBExec @SQLString
   WHERE
     TABLE_NAME = ''M_MEMBER'' AND COLUMN_NAME = ''building_name2'')
 BEGIN
-  print ''' +@DBNAME + 'asdasd''
+  ALTER TABLE M_MEMBER ADD building_name2 VARCHAR(255)
+  print ''' +@DBNAME + 'building_name2''
 END' EXEC @DBExec @SQLString FETCH NEXT
 			FROM
 				cursor_name INTO @DBNAME
