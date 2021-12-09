@@ -45,13 +45,14 @@ DECLARE @s_date VARCHAR(10)
 DECLARE @e_date VARCHAR(10)
 DECLARE @quater INT
 DECLARE @month VARCHAR(100)
+DECLARE @S_YEAR VARCHAR(4)
 
 SET @SQLString=N''
 SET @date_run = convert(VARCHAR(10), getdate(), 23)
 SET @date_data = convert(VARCHAR(10), getdate()-1, 23)
 
 DECLARE cursor_name CURSOR FOR 
-	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID IN ('000','001') AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
+	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID <> '000' AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
 
 	OPEN cursor_name
 	FETCH NEXT FROM cursor_name
@@ -66,27 +67,28 @@ SET @maxid = (SELECT ISNULL(MAX(REPORT_ID),0) FROM M_REPORT_EXPENSE2)
 SET @quater = 1
 
 SET @s_date = convert(VARCHAR(10), CONCAT(YEAR(Getdate()),'-01-01'), 23)
-
+SET @S_YEAR =CONVERT(VARCHAR(4),YEAR(GETDATE()))
 SET @month = CONVERT(VARCHAR(10),MONTH(GETDATE()))
+
 IF(@month >=1 and @month <= 3)
 BEGIN
 SET @quater = 1
-SET @condition = 'and (MONTH(tran_date) between ''01'' and ''03'') AND YEAR(tran_date) = ''2021'''
+SET @condition = 'and (MONTH(tran_date) between ''01'' and ''03'') AND YEAR(tran_date) = '''+@S_YEAR+''''
 END
 ELSE IF(@month >=4 and @month <= 6)
 BEGIN
 SET @quater = 2
-SET @condition = 'and (MONTH(tran_date) between ''04'' and ''06'') AND YEAR(tran_date) = ''2021'''
+SET @condition = 'and (MONTH(tran_date) between ''04'' and ''06'') AND YEAR(tran_date) = '''+@S_YEAR+''''
 END
 ELSE IF(@month >=6 and @month <= 9)
 BEGIN
 SET @quater = 3
-SET @condition = 'and (MONTH(tran_date) between ''07'' and ''09'') AND YEAR(tran_date) = ''2021'''
+SET @condition = 'and (MONTH(tran_date) between ''07'' and ''09'') AND YEAR(tran_date) = '''+@S_YEAR+''''
 END
 ELSE IF(@month >=10 and @month <= 12)
 BEGIN
 SET @quater = 4
-SET @condition = 'and (MONTH(tran_date) between ''10'' and ''12'') AND YEAR(tran_date) = ''2021'''
+SET @condition = 'and (MONTH(tran_date) between ''10'' and ''12'') AND YEAR(tran_date) = '''+@S_YEAR+''''
 END
 
 -- --ค่าสมัคร
@@ -462,7 +464,9 @@ money_tax,
 money_utility,
 money_cost_building,
 money_account,
-money_guarantee
+money_guarantee,
+quater,
+year_expense2
 )VALUES (
 @date_run,
 @date_data,
@@ -489,7 +493,9 @@ CONVERT(numeric(16,2),CAST(@money_tax AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_utility AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_cost_building AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_account AS FLOAT)),
-CONVERT(numeric(16,2),CAST(@money_guarantee AS FLOAT))
+CONVERT(numeric(16,2),CAST(@money_guarantee AS FLOAT)),
+@quater,
+@S_YEAR
 )
 
 -- SET IDENTITY_INSERT M_REPORT_EXPENSE2 OFF
@@ -500,4 +506,9 @@ CONVERT(numeric(16,2),CAST(@money_guarantee AS FLOAT))
 	-- Close cursor
 	CLOSE cursor_name
 	DEALLOCATE cursor_name
+
+		--- ลบข้อมูลออกจาก quater ก่อนหน้า
+	SET @SQLString ='DELETE FROM M_REPORT_EXPENSE2 WHERE quater = '''+convert(VARCHAR(10),@quater)+''' 
+	AND DATE_RUN <> '''+convert(VARCHAR(10),@date_run)+''' AND year_expense2 =  '''+convert(VARCHAR(10),@S_YEAR)+''' '
+	EXEC sp_Executesql @SQLString
 END
