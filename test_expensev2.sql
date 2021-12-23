@@ -12,10 +12,14 @@ DECLARE @ParameterDef NVARCHAR(500)
 DECLARE @ParameterDef2 NVARCHAR(500)
 DECLARE @total_cash FLOAT
 DECLARE @total_bank FLOAT
+DECLARE @total_other FLOAT
 DECLARE @total_all FLOAT
 DECLARE @total_money_expense FLOAT
+DECLARE @total_money_expense1 FLOAT
 DECLARE @total_money_expense2 FLOAT
 DECLARE @total_buildcost FLOAT
+DECLARE @total_debt_other FLOAT
+DECLARE @total_amount_all FLOAT
 DECLARE @dr_sum_1 FLOAT
 DECLARE @cr_sum_1 FLOAT
 DECLARE @dr_sum_2 FLOAT
@@ -52,7 +56,7 @@ SET @quater = 4
 END
 
 DECLARE cursor_name CURSOR FOR 
-	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID <> '000' AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
+	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID = '001' AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
 
 	OPEN cursor_name
 	FETCH NEXT FROM cursor_name
@@ -66,7 +70,7 @@ SET @DBNAME='baac_chapa_'+@CHAPA_CLOUD_ID
 SET @maxid = (SELECT ISNULL(MAX(REPORT_ID),0) FROM M_REPORT_EXPENSE)
 
 SET @s_date = convert(VARCHAR(10), CONCAT(YEAR(Getdate()),'-01-01'), 23)
-SET @e_date = convert(VARCHAR(10), getdate()-1, 23)
+SET @e_date = convert(VARCHAR(10), getdate(), 23)
 
 --set param output--
 SET @ParameterDef='@dr_sum_1 FLOAT OUTPUT,@cr_sum_1 FLOAT OUTPUT'
@@ -77,13 +81,17 @@ SET @ParameterDef2='@dr_sum_2 FLOAT OUTPUT,@cr_sum_2 FLOAT OUTPUT'
 SET @SQLString = 'select @dr_sum_1=ISNULL(sum(debit_value),0),
                          @cr_sum_1=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''28'' and tran_date < '''+ @s_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''1001'' ) 
+and tran_date < '''+ @s_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @SQLString = 'select @dr_sum_2=ISNULL(sum(debit_value),0),
                          @cr_sum_2=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''28'' and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''1001'' )  
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
 
 SET @total_cash = abs((@dr_sum_1+@dr_sum_2))-abs((@cr_sum_1+@cr_sum_2))
@@ -98,7 +106,7 @@ FROM
 	'+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a
 LEFT JOIN '+@DBNAME+'.dbo.bdg_project b ON a.project_id = b.project_id
 WHERE
-	acc_gl_id IN(SELECT acc_gl_id FROM '+@DBNAME+'.dbo.ACC_GL WHERE acc_gl_parent_id = ''7'')
+	acc_gl_id IN(SELECT acc_gl_id FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code LIKE ''11%'' )
 and tran_date < '''+ @s_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -109,12 +117,31 @@ FROM
 	'+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a
 LEFT JOIN '+@DBNAME+'.dbo.bdg_project b ON a.project_id = b.project_id
 WHERE
-	acc_gl_id IN(SELECT acc_gl_id FROM '+@DBNAME+'.dbo.ACC_GL WHERE acc_gl_parent_id = ''7'')
+	acc_gl_id IN(SELECT acc_gl_id FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code LIKE ''11%'' )
 and tran_date between '''+ @s_date+''' and '''+@e_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
 
 SET @total_bank = (@dr_sum_1+@dr_sum_2)-(@cr_sum_1+@cr_sum_2)
 ------------
+
+-- --สินทรัพย์อื่นๆ
+SET @SQLString = 'select @dr_sum_1=ISNULL(sum(debit_value),0),
+                         @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''12%'' or gl_code like ''13%'' ) 
+and tran_date < '''+ @s_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @SQLString = 'select @dr_sum_2=ISNULL(sum(debit_value),0),
+                         @cr_sum_2=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''12%'' or gl_code like ''13%'' )   
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
+
+SET @total_other = abs((@dr_sum_1+@dr_sum_2))-abs((@cr_sum_1+@cr_sum_2))
 
 -- --เงินสงเคราะห์ล่วงหน้า
 
@@ -122,17 +149,66 @@ SET @SQLString = 'select
     @dr_sum_1=ISNULL(sum(debit_value),0),
     @cr_sum_1=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''40'' and tran_date < '''+ @s_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2001'' ) 
+and tran_date < '''+ @s_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @SQLString = 'select     
     @dr_sum_2=ISNULL(sum(debit_value),0),
     @cr_sum_2=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''40'' and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2001'' )  
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
 
 SET @total_money_expense = (@dr_sum_1+@dr_sum_2)-(@cr_sum_1+@cr_sum_2)
+------------
+
+-- --หนี้สินอื่นๆ
+SET @SQLString = 'select 
+    @dr_sum_1=ISNULL(sum(debit_value),0),
+    @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''2%'' and gl_code not in(''2001'',''2002'',''2003''))  
+and tran_date < '''+ @s_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @SQLString = 'select 
+    @dr_sum_2=ISNULL(sum(debit_value),0),
+    @cr_sum_2=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''2%'' and gl_code not in(''2001'',''2002'',''2003''))
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
+
+SET @total_debt_other = (@dr_sum_1+@dr_sum_2)-(@cr_sum_1+@cr_sum_2)
+------------
+
+-- --เงินสงเคราะห์
+
+SET @SQLString = 'select 
+    @dr_sum_1=ISNULL(sum(debit_value),0),
+    @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2002'' )  
+and tran_date < '''+ @s_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @SQLString = 'select 
+    @dr_sum_2=ISNULL(sum(debit_value),0),
+    @cr_sum_2=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2002'' ) 
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
+
+SET @total_money_expense1 = (@dr_sum_1+@dr_sum_2)-(@cr_sum_1+@cr_sum_2)
 ------------
 
 -- --เงินสงเคราะห์ค้างจ่าย
@@ -141,29 +217,48 @@ SET @SQLString = 'select
     @dr_sum_1=ISNULL(sum(debit_value),0),
     @cr_sum_1=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''42'' and tran_date < '''+ @s_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2003'' )  
+and tran_date < '''+ @s_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @SQLString = 'select 
     @dr_sum_2=ISNULL(sum(debit_value),0),
     @cr_sum_2=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''42'' and tran_date between '''+ @s_date+''' and '''+@e_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''2003'' ) 
+and tran_date between '''+ @s_date+''' and '''+@e_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef2,@dr_sum_2 OUTPUT,@cr_sum_2 OUTPUT
 
 SET @total_money_expense2 = (@dr_sum_1+@dr_sum_2)-(@cr_sum_1+@cr_sum_2)
 ------------
 
--- --อุปกรณ์สำนักงาน
+-- --อาคารและอุปกรณ์เครื่องใช้สำนักงาน
 
 SET @SQLString = 'select 
     @dr_sum_1=ISNULL(sum(debit_value),0),
     @cr_sum_1=ISNULL(sum(credit_value),0)
 from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
-LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id where acc_gl_id = ''34'' and tran_date < '''+ @s_date+''''
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''14%'' ) 
+and tran_date < '''+ @e_date+''''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @total_buildcost = (@dr_sum_1-@cr_sum_1)
+------------
+
+-- --รายได้สูงกว่าค่าใช้จ่ายสะสม
+
+SET @SQLString = 'select 
+    @dr_sum_1=ISNULL(sum(debit_value),0),
+    @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id = (SELECT top 1 ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code = ''3001'' )'
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @total_amount_all = @cr_sum_1
 ------------
 
 -- --รายได้สูง(ต่ำ)กว่ารายจ่าย
@@ -227,7 +322,7 @@ AND ACC_TRANSEC.delete_flag = ''0''
 AND ACC_GL.gl_code LIKE ''5%''
 AND post_type = ''C'''
 EXEC sp_Executesql @SQLString,@ParameterDef,@cr_sum_2 OUTPUT
-SET @total_all = abs((@dr_sum_1-@dr_sum_2))-abs((@cr_sum_1-@cr_sum_2))
+SET @total_all = abs((@cr_sum_1-@cr_sum_2)) - abs((@dr_sum_1-@dr_sum_2))
 ------------------
 
 -- SET IDENTITY_INSERT M_REPORT_EXPENSE ON
@@ -239,9 +334,13 @@ CHAPA_CLOUD_ID,
 total_cash,
 total_bank,
 total_money_expense,
+total_money_expense1,
 total_money_expense2,
 total_buildcost,
 total_all,
+total_other,
+total_debt_other,
+total_amount_all,
 quater,
 year_expense
 ) 
@@ -252,9 +351,13 @@ VALUES(
 CONVERT(numeric(16,2),CAST(@total_cash AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_bank AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_money_expense AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@total_money_expense1 AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_money_expense2 AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_buildcost AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_all AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@total_other AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@total_debt_other AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@total_amount_all AS FLOAT)),
 @quater,
 @S_YEAR
 )

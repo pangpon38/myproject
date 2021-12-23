@@ -37,6 +37,7 @@ DECLARE @money_allowance2 FLOAT
 DECLARE @money_vehicle2 FLOAT
 DECLARE @money_repair FLOAT
 DECLARE @money_guarantee FLOAT
+DECLARE @cost_print FLOAT
 ----------
 
 DECLARE @dr_sum_1 FLOAT
@@ -103,7 +104,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''001'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -119,7 +120,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''002'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -135,7 +136,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''003'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -151,7 +152,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''004'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -167,7 +168,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''005'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -183,7 +184,7 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id NOT IN (
 FROM
 	'+@DBNAME+'.dbo.ACC_INCOME
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	income_code = ''006'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -199,9 +200,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(108)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -215,9 +217,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(114)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -231,9 +234,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(113)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -247,9 +251,9 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code = ''111'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -263,9 +267,9 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code = ''116'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -279,9 +283,9 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code = ''115'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -295,9 +299,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(119)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -311,9 +316,9 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code = ''120'' and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -327,9 +332,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(124)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -343,9 +349,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(117)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -359,9 +366,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(118)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -375,15 +383,16 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(123)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @money_tax = abs(@dr_sum_1 - @cr_sum_1)
 
--- --ค่าพาหนะเบี้ยเลี้ยง-เจ้าหน้าที่
+-- --ค่าเบี้ยประชุม ค่าเบี้ยเลี้ยง เจ้าหน้าที่
 SET @ParameterDef='@dr_sum_1 FLOAT OUTPUT,@cr_sum_1 FLOAT OUTPUT'
 SET @SQLString = 'select @dr_sum_1=ISNULL(sum(debit_value),0),
                          @cr_sum_1=ISNULL(sum(credit_value),0)
@@ -391,9 +400,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(109)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -407,9 +417,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(110)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -423,9 +434,10 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(121)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -439,13 +451,30 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code in (SELECT ISNULL(COST_DE_CODE, 0)
+FROM baac_cloud_63.dbo.get_costcode(112)) and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
 SET @money_guarantee = abs(@dr_sum_1 - @cr_sum_1)
+
+-- -- ค่าเครื่องเขียนแบบพิมพ์
+SET @ParameterDef='@dr_sum_1 FLOAT OUTPUT,@cr_sum_1 FLOAT OUTPUT'
+SET @SQLString = 'select @dr_sum_1=ISNULL(sum(debit_value),0),
+                         @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id IN (
+    SELECT
+	acc_gl_id
+FROM
+	'+@DBNAME+'.dbo.ACC_COST
+WHERE
+	cost_code = ''122'' and active_status = ''1'') and a.acc_close = ''0'' 
+'+@condition+''
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @cost_print = abs(@dr_sum_1 - @cr_sum_1)
 
 -- --ค่าใช้จ่ายอื่นๆ
 SET @ParameterDef='@dr_sum_1 FLOAT OUTPUT,@cr_sum_1 FLOAT OUTPUT'
@@ -455,9 +484,9 @@ from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a where acc_gl_id NOT IN (
     SELECT
 	acc_gl_id
 FROM
-	'+@DBNAME+'.dbo.ACC_INCOME
+	'+@DBNAME+'.dbo.ACC_COST
 WHERE
-	income_code = ''001'') and a.acc_close = ''0'' 
+	cost_code not in (select COST_CODE FROM M_COST)  and active_status = ''1'') and a.acc_close = ''0'' 
 '+@condition+''
 EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 
@@ -492,6 +521,7 @@ money_utility,
 money_cost_building,
 money_account,
 money_guarantee,
+cost_print,
 quater,
 year_expense2
 )VALUES (
@@ -521,6 +551,7 @@ CONVERT(numeric(16,2),CAST(@money_utility AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_cost_building AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_account AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@money_guarantee AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@cost_print AS FLOAT)),
 @quater,
 @S_YEAR
 )
