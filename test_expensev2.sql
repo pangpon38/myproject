@@ -1,4 +1,4 @@
-ALTER PROCEDURE [dbo].[test_expense]
+ALTER PROCEDURE [dbo].[report_expense]
 AS
 BEGIN
 DECLARE @SQLString NVARCHAR(MAX)

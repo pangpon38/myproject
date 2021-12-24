@@ -1,4 +1,4 @@
-ALTER PROCEDURE [dbo].[test_mis]
+ALTER PROCEDURE [dbo].[report_mis_groupby]
 AS
 BEGIN
 DECLARE @SQLString NVARCHAR(MAX)
