@@ -18,6 +18,7 @@ DECLARE @total_money_expense FLOAT
 DECLARE @total_money_expense1 FLOAT
 DECLARE @total_money_expense2 FLOAT
 DECLARE @total_buildcost FLOAT
+DECLARE @total_depre FLOAT
 DECLARE @total_debt_other FLOAT
 DECLARE @total_amount_all FLOAT
 DECLARE @dr_sum_1 FLOAT
@@ -56,7 +57,7 @@ SET @quater = 4
 END
 
 DECLARE cursor_name CURSOR FOR 
-	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID = '001' AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
+	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM M_BASIC WHERE CHAPA_CLOUD_ID IN ('000','001') AND DEP_STATUS = '1' ORDER BY CHAPA_CLOUD_ID
 
 	OPEN cursor_name
 	FETCH NEXT FROM cursor_name
@@ -248,6 +249,20 @@ EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
 SET @total_buildcost = (@dr_sum_1-@cr_sum_1)
 ------------
 
+-- --หักค่าเสื่อมอุปกรณ์
+
+SET @SQLString = 'select 
+    @dr_sum_1=ISNULL(sum(debit_value),0),
+    @cr_sum_1=ISNULL(sum(credit_value),0)
+from '+@DBNAME+'.dbo.V_ACC_TRANSEC_DETAIL a 
+LEFT JOIN '+@DBNAME+'.dbo.bdg_project b on a.project_id =b.project_id 
+where acc_gl_id IN (SELECT ISNULL(acc_gl_id,0) FROM '+@DBNAME+'.dbo.ACC_GL WHERE gl_code like ''15%'' ) 
+and tran_date < '''+ @e_date+''''
+EXEC sp_Executesql @SQLString,@ParameterDef,@dr_sum_1 OUTPUT,@cr_sum_1 OUTPUT
+
+SET @total_depre = (@dr_sum_1-@cr_sum_1)
+------------
+
 -- --รายได้สูงกว่าค่าใช้จ่ายสะสม
 
 SET @SQLString = 'select 
@@ -322,7 +337,7 @@ AND ACC_TRANSEC.delete_flag = ''0''
 AND ACC_GL.gl_code LIKE ''5%''
 AND post_type = ''C'''
 EXEC sp_Executesql @SQLString,@ParameterDef,@cr_sum_2 OUTPUT
-SET @total_all = abs((@cr_sum_1-@cr_sum_2)) - abs((@dr_sum_1-@dr_sum_2))
+SET @total_all =  abs((@dr_sum_1-@cr_sum_1)) - abs((@cr_sum_2-@dr_sum_2))
 ------------------
 
 -- SET IDENTITY_INSERT M_REPORT_EXPENSE ON
@@ -337,6 +352,7 @@ total_money_expense,
 total_money_expense1,
 total_money_expense2,
 total_buildcost,
+total_depre,
 total_all,
 total_other,
 total_debt_other,
@@ -354,6 +370,7 @@ CONVERT(numeric(16,2),CAST(@total_money_expense AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_money_expense1 AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_money_expense2 AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_buildcost AS FLOAT)),
+CONVERT(numeric(16,2),CAST(@total_depre AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_all AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_other AS FLOAT)),
 CONVERT(numeric(16,2),CAST(@total_debt_other AS FLOAT)),

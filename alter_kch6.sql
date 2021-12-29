@@ -8,17 +8,31 @@ SET @SQLString=N''
 -- SET @DBNAME=N''
 
 DECLARE cursor_name CURSOR FOR 
-	SELECT BASIC_ID,CHAPA_CLOUD_ID FROM baac_cloud_63.dbo.M_BASIC WHERE CHAPA_CLOUD_ID <> '000' ORDER BY CHAPA_CLOUD_ID
+		SELECT
+	name
+FROM
+	master.sys.databases
+WHERE
+	name NOT IN (
+		'master',
+		'tempdb',
+		'model',
+		'msdb',
+		'baac_cloud_63',
+		'baac_chapa_dev',
+		'baac_chapa_000_20210617'
+	)
+    ORDER BY name ASC
 
 	OPEN cursor_name
 	FETCH NEXT FROM cursor_name
-	INTO @BASIC_ID,@CHAPA_CLOUD_ID
+	INTO @DBNAME
 
 	-- Loop From Cursor
 	WHILE (@@FETCH_STATUS = 0) 
 	BEGIN 
 
-SET @DBNAME='baac_chapa_'+@CHAPA_CLOUD_ID
+--SET @DBNAME='baac_chapa_'+@CHAPA_CLOUD_ID
 SET @DBExec = @DBNAME + N'.sys.sp_executesql';
 
 SET @SQLString = 'ALTER VIEW V_MEMBER_KCH6 
@@ -259,16 +273,20 @@ FROM
 						''โสด''
 					WHEN M_CHG_MARRY.marry_status_old = 2 THEN
 						''สมรส''
-					ELSE
+					WHEN M_CHG_MARRY.marry_status_old = 3 THEN
 						''หย่า''
+					ELSE
+						''หม้าย''
 					END AS data_old,
 					CASE
 				WHEN M_CHG_MARRY.marry_status_new = 1 THEN
 					''โสด''
 				WHEN M_CHG_MARRY.marry_status_new = 2 THEN
 					''สมรส''
-				ELSE
+				WHEN M_CHG_MARRY.marry_status_new = 3 THEN
 					''หย่า''
+				ELSE
+					''หม้าย''
 				END AS data_new,
 				M_CHG_MARRY.approve_date,
 				''เปลี่ยนสถานะภาพ'' AS type_chg,
@@ -378,7 +396,7 @@ FROM
 		EXEC @DBExec @SQLString 
 
 				FETCH NEXT FROM cursor_name
-		INTO @BASIC_ID,@CHAPA_CLOUD_ID
+		INTO @DBNAME
 	END
 	
 
